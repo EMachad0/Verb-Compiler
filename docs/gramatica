@@ -1,107 +1,103 @@
-programa: 
-    block
+    0 $accept: block $end
 
-block:
-    ''
-    instruction block
+    1 block: %empty
+    2      | statement block
+    3      | flux block
+    4      | function block
 
-instruction:
-    declaration ';'
-    assignment ';'
-    call ';'
-    flux
-    function
+    5 statement: declaration ';'
+    6          | assignment ';'
+    7          | expr ';'
+    8          | error ';'
 
-optional_block:
-    '{' block '}'
-    instruction
+    9 optional_block: statement
+   10               | '{' block '}'
+   11               | '{' error '}'
 
-type:
-    'I'
-    'D'
-    'S'
+   12 type: 'I'
+   13     | 'D'
+   14     | 'S'
 
-value:
-    INTEGER
-    DOUBLE
-    STRING
+   15 value: INTEGER
+   16      | FLOAT
+   17      | STRING
 
-expr:
-    value
-    call
-    UNARYOP expr
-    expr BINARYOP expr
-    expr BITWISEOP expr
-    '(' expr ')'
+   18 expr: value
+   19     | call
+   20     | expr '<' expr
+   21     | expr '>' expr
+   22     | expr BOOLOP expr
+   23     | expr '|' expr
+   24     | expr '^' expr
+   25     | expr '&' expr
+   26     | expr CMPOP expr
+   27     | expr BITSHIFTOP expr
+   28     | expr '+' expr
+   29     | expr '-' expr
+   30     | expr '*' expr
+   31     | expr '/' expr
+   32     | expr '%' expr
+   33     | '-' expr
+   34     | '!' expr
+   35     | '~' expr
+   36     | expr EXPOP expr
+   37     | '(' expr ')'
+   38     | '(' error ')'
 
-declaration:
-    type ID
-    type ID '=' expr
+   39 declaration: %empty
+   40            | type ID
+   41            | type ID '=' expr
 
-assignment:
-    ID '=' expr
-    ID BINARYOP '=' expr
-    ID BITWISEOP '=' expr
-    ID UNARYOP
-    UNARYOP ID
+   42 assignment: ID '=' expr
+   43           | ID ATTOP expr
 
-call:
-    ID
-    ID '(' ')'
-    ID '(' expr_list ')'
+   44 call: ID
+   45     | ID UNARYOP
+   46     | UNARYOP ID
+   47     | ID '(' ')'
+   48     | ID '(' expr_list ')'
+   49     | ID '(' error ')'
 
-expr_list:
-    expr
-    expr ',' expr_list
+   50 expr_list: expr
+   51          | expr ',' expr_list
 
-declaration_list:
-    declaration
-    declaration ',' declaration_list
+   52 declaration_list: declaration
+   53                 | declaration ',' declaration_list
 
-assignment_list:
-    assignment
-    assignment ',' assignment_list
+   54 assignment_list: assignment
+   55                | assignment ',' assignment_list
 
-call_list:
-    call
-    call ',' call_list
+   56 flux: if
+   57     | switch
+   58     | while
+   59     | do
+   60     | for
 
-flux:
-    if
-    switch
-    while
-    do
-    for
-     
-if:
-    '?' '(' expr ')' optional_block elseif else
+   61 if: '?' '(' expr ')' optional_block elseif else
+   62   | '?' '(' error ')' optional_block elseif else
 
-elseif:
-    ''
-    '|' optional_block elseif
+   63 elseif: %empty
+   64       | '$' '(' expr ')' optional_block elseif
+   65       | '$' '(' error ')' optional_block elseif
 
-else:
-    ''
-    ':' optional_block
+   66 else: %empty
+   67     | ':' optional_block
 
-switch:
-    '#' '{' switch_body '}'
+   68 switch: '#' '{' switch_body '}'
+   69       | '#' '{' error '}'
 
-switch_body:
-    ''
-    value '>' instruction switch_body
+   70 switch_body: %empty
+   71            | value ':' statement switch_body
 
-while:
-    'W' '(' expr ')' optional_block else
+   72 while: 'W' '(' expr ')' optional_block else
+   73      | 'W' '(' error ')' optional_block else
 
-do:
-    '{' block '}' while
+   74 do: 'O' '{' block '}' while
 
-for:
-    'F' '(' expr ')' optional_block else
-    'F' '(' INTEGER ';' expr ';' INTEGER ')' optional_block else
-    'F' '(' declaration_list ';' expr ';' assignment_list ')' optional_block else
+   75 for: 'F' '(' expr ')' optional_block else
+   76    | 'F' '(' INTEGER ';' expr ';' INTEGER ')' optional_block else
+   77    | 'F' '(' declaration_list ';' expr ';' assignment_list ')' optional_block else
+   78    | 'F' '(' error ')' optional_block else
 
-function:
-    type ID '(' declaration_list ')' optional_block
-    type ID '(' ')' optional_block
+   79 function: type ID '(' declaration_list ')' optional_block
+   80         | type ID '(' error ')' optional_block
