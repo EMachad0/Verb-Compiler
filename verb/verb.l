@@ -32,6 +32,10 @@ BITSHIFT_OP     <<|>>
 UNARY_OP        \+\+|\-\-
 EXP_OP          \*\*
 
+/* comments */
+LINE_COMMENT    \/\/[^\n]*
+BLOCK_COMMENT   \/\*[^*]*\*\/
+
 %%
 
 {SCO}           {   yylloc->first_column = ++yylloc->last_column;
@@ -119,6 +123,25 @@ EXP_OP          \*\*
                     return yytext[0];
                 }
 
+{LINE_COMMENT}  {   yylloc->first_column = yylloc->last_column + 1; 
+                    yylloc->last_column += strlen(yytext);
+                    strcat(uctx->line, yytext);
+                }
+
+{BLOCK_COMMENT} {   char* token = strtok(yytext, "\n");
+                    yylloc->first_column = yylloc->last_column + 1;
+                    yylloc->last_column += strlen(token);
+                    strcat(uctx->line, token);
+                    while(1) {
+                        token = strtok(NULL, "\n");
+                        if (token == NULL) break;
+                        yylloc->first_line = ++yylloc->last_line;
+                        yylloc->first_column = 1;
+                        yylloc->last_column = 1 + strlen(token);
+                        strcpy(uctx->line, token);
+                    }
+                }
+
 \n              {   yylloc->first_column = yylloc->last_column = 1;
                     yylloc->first_line = ++yylloc->last_line;
                     uctx->line[0] = '\0';
@@ -130,6 +153,7 @@ EXP_OP          \*\*
     
 .               {   yylloc->first_column = ++yylloc->last_column;
                     strcat(uctx->line, yytext);
+
                     return YYUNDEF;
                     char error[] = "(IE) Lexical Error, Unexpected '%c'";
                     sprintf(error, error, yytext[0]);
