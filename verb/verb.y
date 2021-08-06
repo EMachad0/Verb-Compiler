@@ -175,13 +175,13 @@ function:   type ID '(' declaration_list ')' optional_block
 %%
 
 static void location_print(FILE *out, const YYLTYPE* loc) {
-    fprintf (out, "%d.%d", loc->first_line, loc->first_column);
-    int end_col = 0 != loc->last_column ? loc->last_column - 1 : 0;
-    if (loc->first_line < loc->last_line) fprintf (out, "-%d.%d", loc->last_line, end_col);
-    else if (loc->first_column < end_col) fprintf (out, "-%d", end_col);
+    fprintf (out, "%d.%d", loc->first_line, loc->first_column - 1);
+    // int end_col = 0 != loc->last_column ? loc->last_column - 1 : 0;
+    if (loc->first_line < loc->last_line) fprintf (out, "-%d.%d", loc->last_line, loc->last_column);
+    else if (loc->first_column < loc->last_column) fprintf (out, "-%d", loc->last_column);
 }
 
-static int yyreport_syntax_error (const yypcontext_t* ctx) {
+static int yyreport_syntax_error(const yypcontext_t* ctx) {
     int res = 0;
     const YYLTYPE* loc = yypcontext_location(ctx);
     location_print(stderr, loc);
