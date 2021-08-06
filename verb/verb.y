@@ -58,10 +58,12 @@ block:  /* nothing */
 statement:  declaration ';'
     |   assignment ';'
     |   expr ';'
+    |   error ';'
     ;
 
-optional_block: '{' block '}'
-    |   statement
+optional_block: statement
+    |   '{' block '}'
+    |   '{' error '}'
     ;
 
 type:   'I'
@@ -94,6 +96,7 @@ expr:   value
     |   '~' expr
     |   expr EXPOP expr
     |   '(' expr ')'
+    |   '(' error ')'
     ;
 
 declaration:
@@ -110,6 +113,7 @@ call:   ID
     |   UNARYOP ID
     |   ID '(' ')'
     |   ID '(' expr_list ')'
+    |   ID '(' error ')'
     ;
 
 expr_list:  expr
@@ -131,32 +135,41 @@ flux:   if
     |   for
     ;
 
-if:     '?' '(' expr ')' optional_block elseif else ; 
+if:     '?' '(' expr ')' optional_block elseif else
+    |   '?' '(' error ')' optional_block elseif else
+    ;
 
 elseif: /* nothing */
     |   '$' '(' expr ')' optional_block elseif
+    |   '$' '(' error ')' optional_block elseif
     ;
 
 else:   /* nothing */
     |   ':' optional_block
     ;
 
-switch: '#' '{' switch_body '}' ;
+switch: '#' '{' switch_body '}'
+    |   '#' '{' error '}'
+    ;
 
 switch_body:    /* nothing */
     |   value ':' statement switch_body
     ;
 
-while:  'W' '(' expr ')' optional_block else ;
+while:  'W' '(' expr ')' optional_block else
+    |   'W' '(' error ')' optional_block else
+    ;
 
 do: 'O' '{' block '}' while ;
 
 for:    'F' '(' expr ')' optional_block else
     |   'F' '(' INTEGER ';' expr ';' INTEGER ')' optional_block else
     |   'F' '(' declaration_list ';' expr ';' assignment_list ')' optional_block else
+    |   'F' '(' error ')' optional_block else
     ;
 
 function:   type ID '(' declaration_list ')' optional_block
+    |   type ID '(' error ')' optional_block
     ;
 
 %%
