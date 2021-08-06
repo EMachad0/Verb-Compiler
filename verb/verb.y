@@ -5,16 +5,33 @@
 
 extern FILE* yyin;
 
-int yylex();
-
 %}
+
+%code requires {
+    typedef struct {
+        int silent;
+        char *line;
+    } user_context;
+}
+
+%code provides {
+    #define YY_DECL \
+        int yylex(YYSTYPE* yylval, YYLTYPE* yylloc, user_context* uctx)
+    YY_DECL;
+    void yyerror(const YYLTYPE* yylloc, const user_context* uctx, const char* message);
+}
+
+%code {
+    static void location_print(FILE* out, const YYLTYPE* loc);
+}
 
 %verbose
 %locations
-
-%define parse.trace
-%define parse.lac full
+%define api.pure full
 %define parse.error custom
+%define parse.lac full
+%define parse.trace
+%param { user_context* uctx}
 
 %union {
     char *str, *op;
@@ -181,7 +198,13 @@ static void location_print(FILE *out, const YYLTYPE* loc) {
     else if (loc->first_column < loc->last_column) fprintf (out, "-%d", loc->last_column);
 }
 
-static int yyreport_syntax_error(const yypcontext_t* ctx) {
+void yyerror (const YYLTYPE* loc, const user_context* uctx, const char *s) {
+    location_print(stderr, loc);
+    fprintf (stderr, ": %s\n", s);
+}
+
+static int yyreport_syntax_error(const yypcontext_t* ctx, user_context* uctx) {
+    if (uctx->silent) return 0;
     int res = 0;
     const YYLTYPE* loc = yypcontext_location(ctx);
     location_print(stderr, loc);
@@ -202,15 +225,37 @@ static int yyreport_syntax_error(const yypcontext_t* ctx) {
             fprintf(stderr, " before %s", yysymbol_name(lookahead));
     }
     fprintf(stderr, "\n");
+    {
+        fprintf(stderr, "%5d | %s\n", loc->first_line, uctx->line);
+        fprintf(stderr, "%5s | %*s", "", loc->first_column - 1, "^");
+        for (int i = loc->last_column - loc->first_column - 1; 0 <= i; --i) putc(i != 0? '~':'^', stderr);
+        putc('\n', stderr);
+    }
     return res;
+}
+
+user_context* init_uctx() {
+    user_context* uctx = malloc(sizeof(user_context));
+    uctx->silent = 0;
+    uctx->line = malloc(500 * sizeof(char));
+    return uctx;
+}
+
+void free_uctx(user_context* uctx) {
+    free(uctx->line);
+    free(uctx);
 }
 
 int main(int argc, const char **argv) {
     if (argc == 2 && strcmp(argv[1], "-p") == 0) yydebug = 1;
 
+    user_context* uctx = init_uctx();
+
     yyin = stdin;
 	do {
-		yyparse();
+		yyparse(uctx);
 	} while(!feof(yyin));
+
+    free_uctx(uctx);
 	return 0;
 }
