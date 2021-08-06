@@ -1,0 +1,12 @@
+I bin_exp(I b, I e) {
+    I res = 0;
+    I exp = 1;
+    W (b > 0) {
+        exp *= e;
+        ? (b & 1) res += b;
+        b /= 2;
+    }
+    res;
+}
+
+print(bin_exp(input(), input()));

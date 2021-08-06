@@ -1,0 +1,10 @@
+I a = input();
+I cont = 0;
+
+F (a) {
+    ?(a > 0) a--;
+    : a++;
+    cont++;
+}
+
+print(a);

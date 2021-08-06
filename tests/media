@@ -1,0 +1,7 @@
+D a = input();
+D b = input();
+D c = input();
+
+D media = (2*a + 3*b + 5*c) / 10;
+
+print("MEDIA = %f\n", media);

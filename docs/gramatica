@@ -1,0 +1,107 @@
+programa: 
+    block
+
+block:
+    ''
+    instruction block
+
+instruction:
+    declaration ';'
+    assignment ';'
+    call ';'
+    flux
+    function
+
+optional_block:
+    '{' block '}'
+    instruction
+
+type:
+    'I'
+    'D'
+    'S'
+
+value:
+    INTEGER
+    DOUBLE
+    STRING
+
+expr:
+    value
+    call
+    UNARYOP expr
+    expr BINARYOP expr
+    expr BITWISEOP expr
+    '(' expr ')'
+
+declaration:
+    type ID
+    type ID '=' expr
+
+assignment:
+    ID '=' expr
+    ID BINARYOP '=' expr
+    ID BITWISEOP '=' expr
+    ID UNARYOP
+    UNARYOP ID
+
+call:
+    ID
+    ID '(' ')'
+    ID '(' expr_list ')'
+
+expr_list:
+    expr
+    expr ',' expr_list
+
+declaration_list:
+    declaration
+    declaration ',' declaration_list
+
+assignment_list:
+    assignment
+    assignment ',' assignment_list
+
+call_list:
+    call
+    call ',' call_list
+
+flux:
+    if
+    switch
+    while
+    do
+    for
+     
+if:
+    '?' '(' expr ')' optional_block elseif else
+
+elseif:
+    ''
+    '|' optional_block elseif
+
+else:
+    ''
+    ':' optional_block
+
+switch:
+    '#' '{' switch_body '}'
+
+switch_body:
+    ''
+    value '>' instruction switch_body
+
+while:
+    'W' '(' expr ')' optional_block else
+
+do:
+    '{' block '}' while
+
+for:
+    'F' '(' expr ')' optional_block else
+    'F' '(' INTEGER ';' expr ';' INTEGER ')' optional_block else
+    'F' '(' declaration_list ';' expr ';' assignment_list ')' optional_block else
+
+function:
+    type ID '(' declaration_list ')' optional_block
+    type ID '(' ')' optional_block

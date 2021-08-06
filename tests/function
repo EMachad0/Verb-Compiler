@@ -1,0 +1,9 @@
+I f(I a, S b) min(a, b);
+
+I a = input();
+I b = input();
+print(f(a, b));
+
+
+if (a < b) if (a == b)
+elseif
