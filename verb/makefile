@@ -1,8 +1,8 @@
 
-verb: verb.l verb.y verb.c
+all: verb.l verb.y verb.c
 	bison -d verb.y
 	flex -o verb.lex.c verb.l
-	cc -o $@ verb.tab.c verb.lex.c verb.c
+	cc -o verb verb.tab.c verb.lex.c verb.c
 
 compile-with-debug: verb.l verb.y
 	bison -d verb.y
