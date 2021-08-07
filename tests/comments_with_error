@@ -1,0 +1,19 @@
+I // this is a comment
+A;
+
+I a = 0;
+
+I /* this is a inline block comment */ A;
+
+I a = 0;
+
+I /* 
+this is a comment block 1
+this is a comment block 2
+this is a comment block 3
+this is a comment block 4
+*/ A;
+
+I a = 0;
+
+/*  aaaaaaaaaaaaaaaaaaaa */;

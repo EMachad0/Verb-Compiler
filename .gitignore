@@ -82,6 +82,7 @@ bin-release/
 # End of https://www.toptal.com/developers/gitignore/api/c,flex
 
 verb/verb
+verb/compile-with-debug
 verb/*.output
 verb/*.tab.c
 verb/*.tab.h
