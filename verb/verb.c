@@ -58,7 +58,7 @@ void print_dot_node(FILE* f, ast *a, int* node_count, int pai, int pai_f) {
     // if (pai != -1) fprintf(f, "\t\"node%d\":f%d -> \"node%d\";\n", pai, pai_f, me);
     if (pai != -1) fprintf(f, "\tnode%d:f%d -> node%d;\n", pai, pai_f, me);
     for (int i = 0; a != NULL; i++, a = a->dir) {
-        if (a->son != NULL) print_dot_node(f, a->son, node_count, me, i);
+        if (a->son != NULL && (strcmp(a->son->name, "") != 0)) print_dot_node(f, a->son, node_count, me, i);
     }
 }
 
@@ -92,7 +92,7 @@ char* ast_build_str(ast* a, int node_id) {
     sprintf(res, res, node_id);
     for (int i = 0; a != NULL; i++, a = a->dir) {
         char* i_str = malloc((100 + strlen(a->name)) * sizeof(char));
-        sprintf(i_str, "<td port=\"f%d\"%s>%s</td>", i, a->son == NULL? " bgcolor=\"lightgreen\"":"", escape_str(a->name));
+        sprintf(i_str, "<td port=\"f%d\"%s>%s</td>", i, a->son == NULL ? " bgcolor=\"lightgreen\"":"", escape_str(a->name));
         strcat(res, i_str);
     }
     strcat(res, "</tr></table>>];\n");
