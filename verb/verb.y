@@ -68,7 +68,7 @@ extern FILE* yyin;
 
 %%
 
-program:    block                           { print_tree($1, 0); }
+program:    block                           { print_dot_tree($1); free_tree($1); }
     ;
 
 block:  /* nothing */                       { $$ = NULL; }
@@ -166,7 +166,7 @@ elseif: /* nothing */                                   { $$ = NULL; }
     ;
 
 else:   /* nothing */                                   { $$ = NULL; }
-    |   ':' optional_block                              { $$ = new_ast(":", NULL, new_ast(":", $2, NULL)); }
+    |   ':' optional_block                              { $$ = new_ast(":", NULL, new_ast("optional_block", $2, NULL)); }
     ;
 
 switch: '#' '{' switch_body '}'                         { $$ = new_ast("#", NULL, new_ast("{", NULL, new_ast("switch_body", $3, new_ast("}", NULL, NULL)))); }
@@ -252,11 +252,18 @@ void free_uctx(user_context* uctx) {
 }
 
 int main(int argc, const char **argv) {
-    if (argc == 2 && strcmp(argv[1], "-p") == 0) yydebug = 1;
+    if (argc == 2) {
+        if (strcmp(argv[1], "-p") == 0) yydebug = 1;
+        else {
+            printf("Compiling %s\n", argv[1]);
+            yyin = fopen(argv[1], "r");
+        } 
+    } else {
+        yyin = stdin;
+    }
 
     user_context* uctx = init_uctx();
 
-    yyin = stdin;
 	do {
 		yyparse(uctx);
 	} while(!feof(yyin));
