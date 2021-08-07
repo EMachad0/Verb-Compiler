@@ -1,5 +1,5 @@
 
-verb: verb.l verb.y
+verb: verb.l verb.y verb.c
 	bison -d verb.y
 	flex -o verb.lex.c verb.l
 	cc -o $@ verb.tab.c verb.lex.c verb.c

@@ -55,14 +55,14 @@ BLOCK_COMMENT   \/\*[^*]*\*\/
                     return ID; 
                 }
 
-{INTEIRO}       {   yylval->int_val = atoi(yytext);
+{INTEIRO}       {   yylval->str = strdup(yytext);
                     strcat(uctx->line, yytext);
                     yylloc->first_column = yylloc->last_column + 1;
                     yylloc->last_column += strlen(yytext);
                     return INTEGER;
                 }
 
-{FLUTUANTE}     {   yylval->flt_val = atof(yytext); 
+{FLUTUANTE}     {   yylval->str = strdup(yytext); 
                     yylloc->first_column = yylloc->last_column + 1; 
                     yylloc->last_column += strlen(yytext);
                     strcat(uctx->line, yytext);
