@@ -142,6 +142,8 @@ BLOCK_COMMENT   \/\*[^*]*\*\/
                     }
                 }
 
+\r
+
 \n              {   yylloc->first_column = yylloc->last_column = 1;
                     yylloc->first_line = ++yylloc->last_line;
                     uctx->line[0] = '\0';
@@ -153,9 +155,8 @@ BLOCK_COMMENT   \/\*[^*]*\*\/
     
 .               {   yylloc->first_column = ++yylloc->last_column;
                     strcat(uctx->line, yytext);
-
-                    return YYUNDEF;
-                    char error[] = "(IE) Lexical Error, Unexpected '%c'";
+                    // return YYUNDEF;
+                    char error[] = "Lexical Error, Unexpected '%c'";
                     sprintf(error, error, yytext[0]);
                     yyerror(yylloc, uctx, error);
                     return YYerror;
