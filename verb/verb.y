@@ -71,7 +71,7 @@ extern FILE* yyin;
 program:    block                           { print_dot_tree($1); free_tree($1); }
     ;
 
-block:  /* nothing */                       { $$ = new_ast("epsilon", NULL, NULL); }
+block:  /* nothing */                       { $$ = new_ast("ϵ", NULL, NULL); }
     |   statement block                     { $$ = new_ast("statement", $1, new_ast("block", $2, NULL)); }
     |   flux block                          { $$ = new_ast("flux", $1, new_ast("block", $2, NULL)); }
     |   function block                      { $$ = new_ast("function", $1, new_ast("block", $2, NULL)); }
@@ -160,12 +160,12 @@ if:     '?' '(' expr ')' optional_block elseif else     { $$ = new_ast("?", NULL
     |   '?' '(' error ')' optional_block elseif else    { $$ = new_ast("?", NULL, new_ast("(", NULL, new_ast("error", NULL, new_ast(")", NULL, new_ast("optional_block", $5, new_ast("elseif", $6, new_ast("else", $7, NULL))))))); }
     ;
 
-elseif: /* nothing */                                   { $$ = new_ast("epsilon", NULL, NULL); }
+elseif: /* nothing */                                   { $$ = new_ast("ϵ", NULL, NULL); }
     |   '$' '(' expr ')' optional_block elseif          { $$ = new_ast("$", NULL, new_ast("(", NULL, new_ast("expr", $3, new_ast(")", NULL, new_ast("optional_block", $5, new_ast("elseif", $6, NULL)))))); }
     |   '$' '(' error ')' optional_block elseif         { $$ = new_ast("$", NULL, new_ast("(", NULL, new_ast("error", NULL, new_ast(")", NULL, new_ast("optional_block", $5, new_ast("elseif", $6, NULL)))))); }
     ;
 
-else:   /* nothing */                                   { $$ = new_ast("epsilon", NULL, NULL); }
+else:   /* nothing */                                   { $$ = new_ast("ϵ", NULL, NULL); }
     |   ':' optional_block                              { $$ = new_ast(":", NULL, new_ast("optional_block", $2, NULL)); }
     ;
 
@@ -173,7 +173,7 @@ switch: '#' '{' switch_body '}'                         { $$ = new_ast("#", NULL
     |   '#' '{' error '}'                               { $$ = new_ast("#", NULL, new_ast("{", NULL, new_ast("error", NULL, new_ast("}", NULL, NULL)))); }
     ;
 
-switch_body:    /* nothing */                           { $$ = new_ast("epsilon", NULL, NULL); }
+switch_body:    /* nothing */                           { $$ = new_ast("ϵ", NULL, NULL); }
     |   value ':' statement switch_body                 { $$ = new_ast("value", $1, new_ast(":", NULL, new_ast("statement", $3, new_ast("switch_body", $4, NULL)))); }
     ;
 
