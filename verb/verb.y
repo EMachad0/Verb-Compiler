@@ -1,5 +1,7 @@
 %{
 # include <stdio.h>
+# include <stdlib.h>
+# include <stdbool.h>
 # include <string.h>
 # include "verb.h"
 
@@ -252,14 +254,15 @@ void free_uctx(user_context* uctx) {
 }
 
 int main(int argc, const char **argv) {
-    if (argc == 2) {
-        if (strcmp(argv[1], "-p") == 0) yydebug = 1;
+    bool do_dot = false;
+    yyin = stdin;
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-p") == 0) yydebug = 1;
+        else if (strcmp(argv[i], "-d") == 0) do_dot = true;
         else {
-            printf("Compiling %s\n", argv[1]);
-            yyin = fopen(argv[1], "r");
+            printf("Compiling %s\n", argv[i]);
+            yyin = fopen(argv[i], "r");
         } 
-    } else {
-        yyin = stdin;
     }
 
     user_context* uctx = init_uctx();
@@ -269,5 +272,7 @@ int main(int argc, const char **argv) {
 	} while(!feof(yyin));
 
     free_uctx(uctx);
+
+    if (do_dot) system("dot -Tpng verb_ast.dot -o ast.png");
 	return 0;
 }

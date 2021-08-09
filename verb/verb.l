@@ -6,7 +6,7 @@
 %}
 
 /* single character ops */
-SCO             \;|\:|\,|\(|\)|\{|\}|\[|\]
+SCO             \;|\$|\:|\,|\(|\)|\{|\}|\[|\]
 
 /* keywords */
 KEYWORD         [DFIOSW?#]
