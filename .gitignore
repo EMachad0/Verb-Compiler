@@ -2,6 +2,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/c,flex
 # Edit at https://www.toptal.com/developers/gitignore?templates=c,flex
 
+.vscode
+
 ### C ###
 # Prerequisites
 *.d

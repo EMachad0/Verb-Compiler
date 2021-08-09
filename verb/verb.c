@@ -8,23 +8,23 @@
 struct ast {
     char* name;
     struct ast* son;
-    struct ast* dir;
+    struct ast* right;
 };
 
 
-ast* new_ast(char* name, ast* son, ast* dir) {
+ast* new_ast(char* name, ast* son, ast* right) {
     struct ast* a = malloc(sizeof(ast));
     
     a->name = name;
     a->son = son;
-    a->dir = dir;
+    a->right = right;
 
     return a;
 }
 
 void free_tree(ast *a) {
     if (a != NULL) {
-        free_tree(a->dir);
+        free_tree(a->right);
         free_tree(a->son);
         free(a);
     }
@@ -34,7 +34,7 @@ void print_tree(ast *a, int dep) {
     if (a != NULL) {
         print_no(a, dep);
         print_tree(a->son, dep + 1);
-        print_tree(a->dir, dep);
+        print_tree(a->right, dep);
     }
 }
 
@@ -52,19 +52,19 @@ void print_dot_tree(ast *a) {
     fclose(f);
 }
 
-void print_dot_node(FILE* f, ast *a, int* node_count, int pai, int pai_f) {
+void print_dot_node(FILE* f, ast *a, int* node_count, int father, int father_f) {
     int me = (*node_count)++;
     fputs(ast_build_str(a, me), f);
-    // if (pai != -1) fprintf(f, "\t\"node%d\":f%d -> \"node%d\";\n", pai, pai_f, me);
-    if (pai != -1) fprintf(f, "\tnode%d:f%d -> node%d;\n", pai, pai_f, me);
-    for (int i = 0; a != NULL; i++, a = a->dir) {
+    // if (father != -1) fprintf(f, "\t\"node%d\":f%d -> \"node%d\";\n", father, father_f, me);
+    if (father != -1) fprintf(f, "\tnode%d:f%d -> node%d;\n", father, father_f, me);
+    for (int i = 0; a != NULL; i++, a = a->right) {
         if (a->son != NULL) print_dot_node(f, a->son, node_count, me, i);
     }
 }
 
 int ast_str_len(ast* a) {
     int sz = 0;
-    for ( ; a != NULL; a = a->dir) sz += strlen(a->name);
+    for ( ; a != NULL; a = a->right) sz += strlen(a->name);
     return sz;
 }
 
@@ -90,9 +90,9 @@ char* ast_build_str(ast* a, int node_id) {
     char* res = malloc((200 + ast_str_len(a)) * sizeof(char));
     strcpy(res, "\tnode%d[label = <<table BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\"><tr>");
     sprintf(res, res, node_id);
-    for (int i = 0; a != NULL; i++, a = a->dir) {
+    for (int i = 0; a != NULL; i++, a = a->right) {
         char* i_str = malloc((100 + strlen(a->name)) * sizeof(char));
-        sprintf(i_str, "<td port=\"f%d\"%s>%s</td>", i, a->son == NULL? " bgcolor=\"lightgreen\"":"", escape_str(a->name));
+        sprintf(i_str, "<td port=\"f%d\"%s>%s</td>", i, a->son == NULL ? " bgcolor=\"lightgreen\"":"", escape_str(a->name));
         strcat(res, i_str);
     }
     strcat(res, "</tr></table>>];\n");
