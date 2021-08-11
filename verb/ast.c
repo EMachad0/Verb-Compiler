@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "verb.h"
+#include "ast.h"
 #include "verb.tab.h"
 
 struct ast {
