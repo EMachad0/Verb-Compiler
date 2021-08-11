@@ -13,6 +13,7 @@ The envirornment used to develop: **Ubuntu 20.04, gcc 9.3.0, make 4.2.1**
 
 * Compile using `make`:
     ```bash
+    cd verb
     make
     ```
 * Run
