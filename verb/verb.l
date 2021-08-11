@@ -1,6 +1,6 @@
 %option noyywrap
 %{
-# include "verb.h"
+# include "ast.h"
 # include "verb.tab.h"
 
 %}

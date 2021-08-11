@@ -1,13 +1,8 @@
 
-all: verb.l verb.y verb.c
+all: verb.l verb.y ast.c
 	bison -d verb.y
 	flex -o verb.lex.c verb.l
-	cc -o verb verb.tab.c verb.lex.c verb.c
-
-compile-with-debug: verb.l verb.y
-	bison -d verb.y
-	flex -o verb.lex.c verb.l
-	gcc -o $@ verb.tab.c verb.lex.c verb.c -g
+	cc -o verb verb.tab.c verb.lex.c ast.c
 
 graph: verb.y
 	bison -d -g verb.y
@@ -17,4 +12,4 @@ counterexamples:
 	bison -d verb.y -Wcex 2> cex.output
 
 clean:
-	rm *.tab.h *.lex.c *.tab.c *.output *.dot *.png
+	rm *.tab.h *.lex.c *.tab.c *.output *.dot *.png verb

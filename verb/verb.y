@@ -1,7 +1,7 @@
 %{
 # include <stdio.h>
 # include <string.h>
-# include "verb.h"
+# include "ast.h"
 
 extern FILE* yyin;
 
