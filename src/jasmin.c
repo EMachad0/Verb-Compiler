@@ -33,7 +33,7 @@ void write_line(int n) {
 
 void generate_header(char* source_file) {
 	write_code(concat(".source ", source_file));
-	write_code(".class public test\n.super java/lang/Object\n"); //code for defining class
+	write_code(".class public output/Verb\n.super java/lang/Object\n"); //code for defining class
 	write_code(".method public <init>()V");
 	write_code("\taload_0");
 	write_code("\tinvokenonvirtual java/lang/Object/<init>()V");
@@ -45,10 +45,12 @@ void generate_header(char* source_file) {
 	define_var("1syso_int_var", INT_T);
 	define_var("1syso_float_var", FLOAT_T);
 	/*generate line*/
+	write_code("; code start");
 	write_line(1);
 }
 
 void generate_footer() {
+	write_code("; code end");
 	write_code("return");
 	write_code(".end method");
 }
@@ -80,7 +82,17 @@ void assign_var(char* id) {
 	symbol* smb = get_symbol(id_map, id);
 	if (smb->type == INT_T) {
 		write_code(concat("istore ", i_to_str(smb->value)));
-	} else {
+	} else if (smb->type == FLOAT_T) {
 		write_code(concat("fstore ", i_to_str(smb->value)));
 	}
+}
+
+int load_var(char* id) {
+	symbol* smb = get_symbol(id_map, id);
+	if (smb->type == INT_T) {
+		write_code(concat("iload ", i_to_str(smb->value)));
+	} else if (smb->type == FLOAT_T) {
+		write_code(concat("fload ", i_to_str(smb->value)));
+	}
+	return smb->type;
 }

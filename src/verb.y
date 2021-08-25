@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include "../src/jasmin.h"
 #include "../vector/vector.h"
+#include "../utils/str_utils.h"
 
 extern FILE* yyin;
 
@@ -44,9 +45,6 @@ const char* source_file = "";
     char *sval;
     int ival;
     double fval;
-    struct {
-		int type;
-	} expr_val;
 	struct {
 		struct vector *go_in, *go_out, *go_next;
 	} flow_val;
@@ -77,6 +75,7 @@ const char* source_file = "";
 // %nterm <aast> block statement optional_block type value expr declaration assignment call
 // %nterm <aast> expr_list declaration_list assignment_list flux if elseif else switch
 // %nterm <aast> switch_body while do for function
+%nterm <ival> expr type value call
 
 %start program
 
@@ -90,7 +89,7 @@ program:                                { generate_header(source_file); }
 block:  /* nothing */                       { }
     |   statement block                     { }
     |   flux block                          { }
-    |   function block                      { }
+    // |   function block                      { }
     ;
 
 statement:  declaration ';'                 { }
@@ -104,58 +103,58 @@ optional_block: statement                   { }
     |   '{' error '}'                       { }
     ;
 
-type:   'I'                                 { }
-    |   'D'                                 { }
-    |   'S'                                 { }
+type:   'I'                                 { $$ = INT_T; }
+    |   'D'                                 { $$ = FLOAT_T; }
+    |   'S'                                 { $$ = STR_T; }
     ;
 
-value:  INTEGER                             { }
-    |   FLOAT                               { }
-    |   STRING                              { }
+value:  INTEGER                             { $$ = INT_T; write_code(concat("ldc ", i_to_str($1))); }
+    |   FLOAT                               { $$ = FLOAT_T; write_code(concat("ldc ", f_to_str($1))); }
+    |   STRING                              { $$ = STR_T; write_code(concat("ldc ", $1)); }
     ;    
 
-expr:   value                               { }
-    |   call                                { }
-    |   expr '<' expr                       { }
-    |   expr '>' expr                       { }
-    |   expr BOOLOP expr                    { }
-    |   expr '|' expr                       { }
-    |   expr '^' expr                       { }
-    |   expr '&' expr                       { }
-    |   expr CMPOP expr                     { }
-    |   expr BITSHIFTOP expr                { }
-    |   expr '+' expr                       { }
-    |   expr '-' expr                       { }
-    |   expr '*' expr                       { }
-    |   expr '/' expr                       { }
-    |   expr '%' expr                       { }
-    |   '-' expr %prec UNARYOP              { }
-    |   '!' expr                            { }
-    |   '~' expr                            { }
-    |   expr EXPOP expr                     { }
-    |   '(' expr ')'                        { }
-    |   '(' error ')'                       { }
+expr:   value                               { $$ = $1; }
+    |   call                                { $$ = $1; }
+    // |   expr '<' expr                       { }
+    // |   expr '>' expr                       { }
+    // |   expr BOOLOP expr                    { }
+    // |   expr '|' expr                       { }
+    // |   expr '^' expr                       { }
+    // |   expr '&' expr                       { }
+    // |   expr CMPOP expr                     { }
+    // |   expr BITSHIFTOP expr                { }
+    // |   expr '+' expr                       { }
+    // |   expr '-' expr                       { }
+    // |   expr '*' expr                       { }
+    // |   expr '/' expr                       { }
+    // |   expr '%' expr                       { }
+    // |   '-' expr %prec UNARYOP              { }
+    // |   '!' expr                            { }
+    // |   '~' expr                            { }
+    // |   expr EXPOP expr                     { }
+    // |   '(' expr ')'                        { }
+    // |   '(' error ')'                       { }
     ;
 
-declaration:    type ID                     { }
-    |   type ID '=' expr                    { }
+declaration:    type ID                     { define_var($2, $1); }
+    |   type ID '=' expr                    { define_var($2, $1); assign_var($2); }
     ;
 
-assignment: ID '=' expr                     { }
+assignment: ID '=' expr                     { assign_var($1); }
     |   ID ATTOP expr                       { }
     ;
 
-call:   ID                                  { }
-    |   ID UNARYOP                          { }
-    |   UNARYOP ID                          { }
-    |   ID '(' ')'                          { }
-    |   ID '(' expr_list ')'                { }
-    |   ID '(' error ')'                    { }
+call:   ID                                  { $$ = load_var($1); }
+    // |   ID UNARYOP                          { }
+    // |   UNARYOP ID                          { }
+    // |   ID '(' ')'                          { }
+    // |   ID '(' expr_list ')'                { }
+    // |   ID '(' error ')'                    { }
     ;
 
-expr_list:  expr                            { }
-    |   expr ',' expr_list                  { }
-    ;
+// expr_list:  expr                            { }
+//     |   expr ',' expr_list                  { }
+//     ;
 
 declaration_list:   declaration             { }
     |   declaration ',' declaration_list    { }
@@ -206,9 +205,9 @@ for:    'F' '(' expr ')' optional_block else                                    
     |   'F' '(' error ')' optional_block else                                           { }
     ;
 
-function:   type ID '(' declaration_list ')' optional_block                             { }
-    |   type ID '(' error ')' optional_block                                            { }
-    ;
+// function:   type ID '(' declaration_list ')' optional_block                             { }
+//     |   type ID '(' error ')' optional_block                                            { }
+//     ;
 
 %%
 
@@ -272,7 +271,7 @@ int main(int argc, const char **argv) {
         if (strcmp(argv[i], "-p") == 0) yydebug = 1;
         else {
             printf("Compiling %s\n", argv[i]);
-            source_file = argv[i];
+            source_file = (source_file[0] == '.')? argv[i]+1 : argv[i];
             yyin = fopen(argv[i], "r");
         } 
     }

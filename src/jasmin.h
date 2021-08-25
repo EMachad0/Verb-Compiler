@@ -1,7 +1,7 @@
 #ifndef JASMIN_H
 #define JASMIN_H
 
-typedef enum {INT_T, FLOAT_T, BOOL_T, VOID_T, ERROR_T} type_enum;
+typedef enum {INT_T, FLOAT_T, STR_T, ERROR_T} type_enum;
 
 void jasmin_init();
 void jasmin_delete();
@@ -11,4 +11,6 @@ void generate_header();
 void write_code(char *s);
 bool check_id(char* id);
 void define_var(char* id, int type);
+void assign_var(char* id);
+int load_var(char* id);
 #endif
