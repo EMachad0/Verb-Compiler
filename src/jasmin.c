@@ -6,7 +6,7 @@
 #include "../hashmap/hashmap.h"
 #include "../hashmap/hashmap_symbol.h"
 #include "../utils/str_utils.h"
-// #include "../output/verb.tab.h"
+#include "../output/verb.tab.h"
 
 int id_cont;
 hashmap* id_tab;
@@ -66,16 +66,12 @@ bool check_id(char* id) {
 }
 
 void define_var(char* id, int type) {
-	if (check_id(id)) {
-        // yyerror(concat_many(3, "variable ", id, " already declared!"));
-	} else {
-		if (type == INT_T) {
-			write_code("iconst_0");
-			write_code(concat("istore ", i_to_str(id_cont)));
-		} else if (type == FLOAT_T) {
-			write_code("fconst_0");
-			write_code(concat("fstore ", i_to_str(id_cont)));
-		}
-		set_symbol(id_tab, id, id_cont++, type);
+	if (type == INT_T) {
+		write_code("iconst_0");
+		write_code(concat("istore ", i_to_str(id_cont)));
+	} else if (type == FLOAT_T) {
+		write_code("fconst_0");
+		write_code(concat("fstore ", i_to_str(id_cont)));
 	}
+	set_symbol(id_tab, id, id_cont++, type);
 }
