@@ -9,17 +9,17 @@
 #include "../output/verb.tab.h"
 
 int id_cont;
-hashmap* id_tab;
+hashmap* id_map;
 vector* code_list;
 
 void jasmin_init() {
 	id_cont = 1;
-    id_tab = hashmap_create(100005); 
+    id_map = hashmap_create(100005); 
     code_list = vector_create(); 
 }
 
 void jasmin_delete() {
-    hashmap_delete(id_tab);
+    hashmap_delete(id_map);
     vector_delete(code_list);
 }
 
@@ -62,7 +62,7 @@ void print_code(void) {
 }
 
 bool check_id(char* id) {
-	return hashmap_has(id_tab, id);
+	return hashmap_has(id_map, id);
 }
 
 void define_var(char* id, int type) {
@@ -73,11 +73,11 @@ void define_var(char* id, int type) {
 		write_code("fconst_0");
 		write_code(concat("fstore ", i_to_str(id_cont)));
 	}
-	set_symbol(id_tab, id, id_cont++, type);
+	set_symbol(id_map, id, id_cont++, type);
 }
 
 void assign_var(char* id) {
-	symbol* smb = get_symbol(id_tab, id);
+	symbol* smb = get_symbol(id_map, id);
 	if (smb->type == INT_T) {
 		write_code(concat("istore ", i_to_str(smb->value)));
 	} else {
