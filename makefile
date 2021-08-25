@@ -12,7 +12,7 @@ bison: src/verb.y
 	bison -o output/verb.tab.c -d src/verb.y
 
 counterexamples: src/verb.y
-	bison -d src/verb.y -Wcex 2> output/cex.output
+	bison -o output/verb.tab.c -d src/verb.y -Wcex 2> output/cex.output
 
 graph: src/verb.y
 	bison -g output/verb.dot -d src/verb.y
