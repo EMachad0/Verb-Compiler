@@ -147,7 +147,7 @@ BLOCK_COMMENT   \/\*[^*]*\*\/
 \n              {   yylloc->first_column = yylloc->last_column = 1;
                     yylloc->first_line = ++yylloc->last_line;
                     uctx->line[0] = '\0';
-                    // write_line(yylloc->first_line);
+                    write_line(yylloc->first_line);
                 }
                 
 [ ]             {   yylloc->first_column = ++yylloc->last_column;

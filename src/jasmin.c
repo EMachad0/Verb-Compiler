@@ -41,7 +41,7 @@ void generate_header(char* source_file) {
 	// defineVar("1syso_int_var",INT_T);
 	// defineVar("1syso_float_var",FLOAT_T);
 	/*generate line*/
-	// write_line(1);
+	write_line(1);
 }
 
 void generate_footer() {

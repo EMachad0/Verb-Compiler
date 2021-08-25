@@ -82,7 +82,9 @@ const char* source_file = "";
 
 %%
 
-program:    block                           { generate_header(source_file); generate_footer(); }
+program:                                { generate_header(source_file); } 
+        block
+                                        { generate_footer(); }
     ;
 
 block:  /* nothing */                       { }
