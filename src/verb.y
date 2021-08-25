@@ -33,7 +33,7 @@ extern FILE* yyin;
 %define parse.error custom
 %define parse.lac full
 %define parse.trace
-%param { user_context* uctx}
+%param { user_context* uctx }
 
 %union {
     char *str, *op;
