@@ -55,7 +55,6 @@ void print_dot_tree(ast *a) {
 void print_dot_node(FILE* f, ast *a, int* node_count, int father, int father_f) {
     int me = (*node_count)++;
     fputs(ast_build_str(a, me), f);
-    // if (father != -1) fprintf(f, "\t\"node%d\":f%d -> \"node%d\";\n", father, father_f, me);
     if (father != -1) fprintf(f, "\tnode%d:f%d -> node%d;\n", father, father_f, me);
     for (int i = 0; a != NULL; i++, a = a->right) {
         if (a->son != NULL) print_dot_node(f, a->son, node_count, me, i);
