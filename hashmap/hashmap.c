@@ -43,7 +43,7 @@ void *hashmap_get(hashmap *map, const char *key){
         return avltree_get(map->buffer[index], key);
     }
 
-    fprintf(stderr, "key does not exist\n");
+    fprintf(stderr, "key '%s' does not exist\n", key);
     return 0;
 }
 
