@@ -9,7 +9,7 @@ extern void write_line(int n);
 SCO             \;|\$|\:|\,|\(|\)|\{|\}|\[|\]
 
 /* keywords */
-KEYWORD         [DFIOSW?#]
+KEYWORD         [DFIPOSW?#]
 
 /* variaveis */
 ID              [a-z_][a-z0-9_]*
@@ -140,11 +140,6 @@ BLOCK_COMMENT   \/\*[^*]*\*\/
                         yylloc->last_column = 1 + strlen(token);
                         strcpy(uctx->line, token);
                     }
-                }
-
-'P'             {   yylloc->first_column = ++yylloc->last_column;
-                    strcat(uctx->line, yytext);
-                    return STDOUT;    
                 }
 
 \r

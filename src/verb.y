@@ -96,6 +96,7 @@ statement:  declaration ';'                 { }
     |   assignment ';'                      { }
     |   expr ';'                            { }
     |   error ';'                           { }
+    |   print ';'                           { }
     ;
 
 optional_block: statement                   { }
@@ -208,6 +209,8 @@ for:    'F' '(' expr ')' optional_block else                                    
 // function:   type ID '(' declaration_list ')' optional_block                             { }
 //     |   type ID '(' error ')' optional_block                                            { }
 //     ;
+
+print:  'P' '(' expr ')'             {   stdout_code($3);    }
 
 %%
 

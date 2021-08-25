@@ -13,4 +13,6 @@ bool check_id(char* id);
 void define_var(char* id, int type);
 void assign_var(char* id);
 int load_var(char* id);
+void stdout_code(int );
+
 #endif

@@ -96,3 +96,22 @@ int load_var(char* id) {
 	}
 	return smb->type;
 }
+
+void stdout_code(int type) {
+	if (type == INT_T) {
+		/* expression is at top of stack now */
+		/* save it at the predefined temp syso var */
+		write_code(concat("istore ", i_to_str(get_symbol(id_map, "1syso_int_var")->value)));
+		/* call syso */	
+		write_code("getstatic      java/lang/System/out Ljava/io/PrintStream;");
+		/*insert param*/
+		write_code(concat("iload ", i_to_str(get_symbol(id_map, "1syso_int_var")->value)));
+		/*invoke syso*/
+		write_code("invokevirtual java/io/PrintStream/println(I)V");
+	} else if (type == FLOAT_T) {
+		write_code(concat("fstore ", i_to_str(get_symbol(id_map, "1syso_float_var")->value)));
+		write_code("getstatic      java/lang/System/out Ljava/io/PrintStream;");
+		write_code(concat("fload ", i_to_str(get_symbol(id_map, "1syso_float_var")->value)));
+		write_code("invokevirtual java/io/PrintStream/println(I)V");	
+	}
+}
