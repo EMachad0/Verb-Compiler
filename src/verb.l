@@ -1,8 +1,7 @@
 %option noyywrap
 %{
-# include "ast.h"
-# include "verb.tab.h"
-
+#include "../ast/ast.h"
+#include "../output/verb.tab.h"
 %}
 
 /* single character ops */

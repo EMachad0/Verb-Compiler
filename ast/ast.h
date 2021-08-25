@@ -1,8 +1,8 @@
 /* interface to the lexer */
 // extern int yylineno; /* from lexer */
 
-#ifndef VERB_H
-#define VERB_H
+#ifndef VERB_AST_H
+#define VERB_AST_H
 
 typedef struct ast ast;
 

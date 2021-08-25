@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "ast.h"
-#include "verb.tab.h"
+#include "../output/verb.tab.h"
 
 struct ast {
     char* name;
