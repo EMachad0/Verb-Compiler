@@ -1,6 +1,13 @@
 
-all: output_dir bison flex output/verb.tab.c output/verb.lex.c
+all: compile run
+
+compile: output_dir bison flex output/verb.tab.c output/verb.lex.c
 	cc -o output/verb output/verb.tab.c output/verb.lex.c hashmap/avltree.c hashmap/hashmap.c hashmap/hashmap_symbol.c vector/vector.c utils/str_utils.c src/jasmin.c
+
+run:
+	output/verb $(f)
+	java -jar ./jasmin-2.4/jasmin.jar -g ./output/verb.j
+	java output.Verb
 
 flex: src/verb.l
 	flex -o output/verb.lex.c src/verb.l
