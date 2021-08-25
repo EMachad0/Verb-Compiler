@@ -5,7 +5,8 @@
 
 char* concat(const char *s1, const char *s2) {
     char *result = malloc(strlen(s1) + strlen(s2) + 1); // +1 for NULL
-    return strcpy(stpcpy(result, s1), s2);
+    strcpy(stpcpy(result, s1), s2);
+    return result;
 }
 
 char* concat_many(int count, ...) {
@@ -35,9 +36,11 @@ char* concat_many(int count, ...) {
 char* f_to_str(double v) {
     char* s = malloc(32 * sizeof(char));
     sprintf(s, "%lf", v);
+    return s;
 }
 
 char* i_to_str(int v) {
     char* s = malloc(32 * sizeof(char));
     sprintf(s, "%d", v);
+    return s;
 }
