@@ -84,3 +84,13 @@ void assign_var(char* id) {
 		write_code(concat("fstore ", i_to_str(smb->value)));
 	}
 }
+
+int load_var(char* id) {
+	symbol* smb = get_symbol(id_map, id);
+	if (smb->type == INT_T) {
+		write_code(concat("iload ", i_to_str(smb->value)));
+	} else if (smb->type == FLOAT_T) {
+		write_code(concat("fload ", i_to_str(smb->value)));
+	}
+	return smb->type;
+}
