@@ -1,7 +1,7 @@
 #ifndef JASMIN_H
 #define JASMIN_H
 
-typedef enum {INT_T, FLOAT_T, BOOL_T, VOID_T, ERROR_T} type_enum;
+typedef enum {INT_T, FLOAT_T, STR_T, ERROR_T} type_enum;
 
 void jasmin_init();
 void jasmin_delete();

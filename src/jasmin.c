@@ -80,7 +80,7 @@ void assign_var(char* id) {
 	symbol* smb = get_symbol(id_map, id);
 	if (smb->type == INT_T) {
 		write_code(concat("istore ", i_to_str(smb->value)));
-	} else {
+	} else if (smb->type == FLOAT_T) {
 		write_code(concat("fstore ", i_to_str(smb->value)));
 	}
 }
