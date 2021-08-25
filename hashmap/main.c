@@ -1,38 +1,22 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "hashmap.h"
-
-typedef struct {
-    int value;
-    int type;
-} symbol;
-
-symbol *create_symbol(int value, int type) {
-    symbol *res = (symbol *) malloc(sizeof(symbol));
-    res->value = value;
-    res->type = type;
-    return res;
-}
-
-symbol *get_symbol(hashmap *map, char* key) {
-    return (symbol *) hashmap_get(map, key);
-}
+#include "hashmap_symbol.h"
 
 int main() {
   
     hashmap *map = hashmap_create(1024);
     
-    hashmap_set(map, "lorem", create_symbol(1, 1));
-    hashmap_set(map, "ipsum", create_symbol(2, 2));
-    hashmap_set(map, "dolor", create_symbol(3, 1));
-    hashmap_set(map, "sit", create_symbol(4, 2));
-    hashmap_set(map, "amet", create_symbol(5, 1));
-    hashmap_set(map, "Vaicara", create_symbol(8, 2));
-    hashmap_set(map, "A", create_symbol(1, 1));
-    hashmap_set(map, "A", create_symbol(8, 2));
-    hashmap_set(map, "trintaetres", create_symbol(33, 1));
-    hashmap_set(map, "C", create_symbol(2, 2));
-    hashmap_set(map, "D", create_symbol(516, 1));
+    set_symbol(map, "lorem", 1, 1);
+    set_symbol(map, "ipsum", 2, 2);
+    set_symbol(map, "dolor", 3, 1);
+    set_symbol(map, "sit", 4, 2);
+    set_symbol(map, "amet", 5, 1);
+    set_symbol(map, "Vaicara", 8, 2);
+    set_symbol(map, "A", 1, 1);
+    set_symbol(map, "A", 8, 2);
+    set_symbol(map, "trintaetres", 33, 1);
+    set_symbol(map, "C", 2, 2);
+    set_symbol(map, "D", 516, 1);
 
     printf("map['%s']->value = %i\n", "lorem", get_symbol(map, "lorem")->value);
     printf("map['%s']->type = %i\n", "lorem", get_symbol(map, "lorem")->type);
@@ -50,7 +34,6 @@ int main() {
 
     hashmap_remove(map, "lorem");
     printf("size: %i\n", hashmap_size(map));
-    // hashmap_print(map);
 
     hashmap_delete(map);
     
