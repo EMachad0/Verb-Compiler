@@ -33,7 +33,7 @@ void write_line(int n) {
 
 void generate_header(char* source_file) {
 	write_code(concat(".source ", source_file));
-	write_code(".class public test\n.super java/lang/Object\n"); //code for defining class
+	write_code(".class public output/Verb\n.super java/lang/Object\n"); //code for defining class
 	write_code(".method public <init>()V");
 	write_code("\taload_0");
 	write_code("\tinvokenonvirtual java/lang/Object/<init>()V");
