@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
@@ -29,4 +30,14 @@ char* concat_many(int count, ...) {
     va_end(ap);
 
     return merged;
+}
+
+char* f_to_str(double v) {
+    char* s = malloc(32 * sizeof(char));
+    sprintf(s, "%lf", v);
+}
+
+char* i_to_str(int v) {
+    char* s = malloc(32 * sizeof(char));
+    sprintf(s, "%d", v);
 }

@@ -4,7 +4,7 @@
 #include "../vector/vector.h"
 #include "../hashmap/hashmap.h"
 #include "../hashmap/hashmap_symbol.h"
-#include "../utils/str_concat.h"
+#include "../utils/str_utils.h"
 
 hashmap* id_tab;
 vector* code_list;
