@@ -142,6 +142,11 @@ BLOCK_COMMENT   \/\*[^*]*\*\/
                     }
                 }
 
+'P'             {   yylloc->first_column = ++yylloc->last_column;
+                    strcat(uctx->line, yytext);
+                    return STDOUT;    
+                }
+
 \r
 
 \n              {   yylloc->first_column = yylloc->last_column = 1;
