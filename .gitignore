@@ -84,3 +84,5 @@ bin-release/
 # End of https://www.toptal.com/developers/gitignore/api/c,flex
 
 output
+*.dot
+ast.png
