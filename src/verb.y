@@ -35,14 +35,14 @@ extern FILE* yyin;
 %param { user_context* uctx }
 
 %union {
-    char *str, *op;
-    int int_val;
-    double flt_val;
+    char *sval;
+    int ival;
+    double fval;
 }
 
-%printer { fprintf (yyo, "%s", $$); } <str> <op>;
-// %printer { fprintf (yyo, "%d", $$); } <int_val>;
-// %printer { fprintf (yyo, "%g", $$); } <flt_val>;
+%printer { fprintf (yyo, "%s", $$); } <sval>;
+// %printer { fprintf (yyo, "%d", $$); } <ival>;
+// %printer { fprintf (yyo, "%g", $$); } <fval>;
 
 %token ID
 %token INTEGER FLOAT STRING
@@ -58,8 +58,8 @@ extern FILE* yyin;
 %right '!' '~' UNARYOP
 %right EXPOP
 
-%type <str> ID STRING INTEGER FLOAT
-%type <op> ATTOP BOOLOP CMPOP BITSHIFTOP UNARYOP EXPOP
+%type <sval> ID STRING INTEGER FLOAT
+%type <sval> ATTOP BOOLOP CMPOP BITSHIFTOP UNARYOP EXPOP
 // %nterm <aast> block statement optional_block type value expr declaration assignment call
 // %nterm <aast> expr_list declaration_list assignment_list flux if elseif else switch
 // %nterm <aast> switch_body while do for function

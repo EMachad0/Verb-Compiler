@@ -46,70 +46,70 @@ BLOCK_COMMENT   \/\*[^*]*\*\/
                     return yytext[0]; 
                 }
 
-{ID}            {   yylval->str = strdup(yytext); 
+{ID}            {   yylval->sval = strdup(yytext); 
                     yylloc->first_column = yylloc->last_column + 1; 
                     yylloc->last_column += strlen(yytext);
                     strcat(uctx->line, yytext);
                     return ID; 
                 }
 
-{INTEIRO}       {   yylval->str = strdup(yytext);
+{INTEIRO}       {   yylval->sval = strdup(yytext);
                     strcat(uctx->line, yytext);
                     yylloc->first_column = yylloc->last_column + 1;
                     yylloc->last_column += strlen(yytext);
                     return INTEGER;
                 }
 
-{FLUTUANTE}     {   yylval->str = strdup(yytext); 
+{FLUTUANTE}     {   yylval->sval = strdup(yytext); 
                     yylloc->first_column = yylloc->last_column + 1; 
                     yylloc->last_column += strlen(yytext);
                     strcat(uctx->line, yytext);
                     return FLOAT; 
                 }
 
-{TEXTO}         {   yylval->str = strdup(yytext); 
+{TEXTO}         {   yylval->sval = strdup(yytext); 
                     yylloc->first_column = yylloc->last_column + 1; 
                     yylloc->last_column += strlen(yytext);
                     strcat(uctx->line, yytext);
                     return STRING; 
                 }
 
-{EXP_OP}        {   yylval->op = strdup(yytext);
+{EXP_OP}        {   yylval->sval = strdup(yytext);
                     yylloc->first_column = yylloc->last_column + 1;
                     yylloc->last_column += strlen(yytext);
                     strcat(uctx->line, yytext);
                     return EXPOP; 
                 }
 
-{UNARY_OP}      {   yylval->op = strdup(yytext); 
+{UNARY_OP}      {   yylval->sval = strdup(yytext); 
                     yylloc->first_column = yylloc->last_column + 1;
                     yylloc->last_column += strlen(yytext);
                     strcat(uctx->line, yytext);
                     return UNARYOP; 
                 }
 
-{BITSHIFT_OP}   {   yylval->op = strdup(yytext); 
+{BITSHIFT_OP}   {   yylval->sval = strdup(yytext); 
                     yylloc->first_column = yylloc->last_column + 1; 
                     yylloc->last_column += strlen(yytext); 
                     strcat(uctx->line, yytext);
                     return BITSHIFTOP;
                 }
 
-{CMP_OP}        {   yylval->op = strdup(yytext); 
+{CMP_OP}        {   yylval->sval = strdup(yytext); 
                     yylloc->first_column = yylloc->last_column + 1; 
                     yylloc->last_column += strlen(yytext);
                     strcat(uctx->line, yytext);
                     return CMPOP; 
                 }
 
-{BOOL_OP}       {   yylval->op = strdup(yytext); 
+{BOOL_OP}       {   yylval->sval = strdup(yytext); 
                     yylloc->first_column = yylloc->last_column + 1; 
                     yylloc->last_column += strlen(yytext);
                     strcat(uctx->line, yytext);
                     return BOOLOP;
                 }
 
-{ATT_OP}        {   yylval->op = strdup(yytext); 
+{ATT_OP}        {   yylval->sval = strdup(yytext); 
                     yylloc->first_column = yylloc->last_column + 1; 
                     yylloc->last_column += strlen(yytext);
                     strcat(uctx->line, yytext);
