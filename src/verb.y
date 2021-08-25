@@ -200,7 +200,6 @@ function:   type ID '(' declaration_list ')' optional_block                     
 
 static void location_print(FILE *out, const YYLTYPE* loc) {
     fprintf (out, "%d.%d", loc->first_line, loc->first_column - 1);
-    // int end_col = 0 != loc->last_column ? loc->last_column - 1 : 0;
     if (loc->first_line < loc->last_line) fprintf (out, "-%d.%d", loc->last_line, loc->last_column);
     else if (loc->first_column < loc->last_column) fprintf (out, "-%d", loc->last_column);
 }
