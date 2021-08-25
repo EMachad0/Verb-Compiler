@@ -28,7 +28,7 @@ void write_code(char *s) {
 }
 
 void write_line(int n) {
-	write_code(".line 1"); /* TODO LINE GENERATION */
+	write_code(concat(".line ", i_to_str(n))); /* TODO LINE GENERATION */
 }
 
 void generate_header(char* source_file) {
@@ -45,7 +45,7 @@ void generate_header(char* source_file) {
 	define_var("1syso_int_var", INT_T);
 	define_var("1syso_float_var", FLOAT_T);
 	/*generate line*/
-	// write_line(1);
+	write_line(1);
 }
 
 void generate_footer() {
