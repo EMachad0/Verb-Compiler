@@ -8,7 +8,7 @@
 
 typedef struct node {
     char *key;
-    int value;
+    void *value;
 
     int height;
     struct node *left;
@@ -83,21 +83,21 @@ static node *right_rotate(node *n) {
     return b;
 }
 
-static node *node_insert(node *n, const char *k, int v){
+static node *node_insert(node *n, const char *k, void *value){
     if (n!=NULL){
         // vê se o cara que a gente tá já não é a chave que estamos procurando
         int compare = strcmp(n->key, k);
 
         if (compare==0){
-            n->value = v;
+            n->value = value;
             return n;
         }
 
         // se for menor vamos pra esquerda se não vamos pra direita
         if (compare>0){
-            n->left = node_insert(n->left, k,  v);
+            n->left = node_insert(n->left, k,  value);
         } else {
-            n->right = node_insert(n->right, k, v);
+            n->right = node_insert(n->right, k, value);
         }
 
         int factor = node_height(n->left) - node_height(n->right);
@@ -128,19 +128,19 @@ static node *node_insert(node *n, const char *k, int v){
         strcpy(n->key, k);
         n->left = NULL;
         n->right = NULL;
-        n->value = v;
+        n->value = value;
         n->height = 1;
         return n;
     }
 }
 
-void avltree_insert(avltree *t, const char *k, int v){
+void avltree_insert(avltree *t, const char *k, void *v){
     t->root = node_insert(t->root, k, v);
 }
 
 // -------------GET-------------
 
-static int node_get(node *n, const char *k) {
+static void *node_get(node *n, const char *k) {
     if(n != NULL) {
         int val = strcmp(n->key, k);
 
@@ -156,7 +156,7 @@ static int node_get(node *n, const char *k) {
     return 0;
 }
 
-int avltree_get(avltree *t, const char *k) {
+void *avltree_get(avltree *t, const char *k) {
     return node_get(t->root, k);
 }
 
@@ -265,71 +265,4 @@ bool avltree_has(avltree *t, const char *k){
         else it = it->right;
     }
     return false;
-}
-
-
-// ----------- INORDER ---------------
- 
-static void node_inorder(node *n, void (*f)(const char *, int)){
-    if (n!=NULL){
-        node_inorder(n->left, f);
-        f(n->key, n->value);
-        node_inorder(n->right, f);
-    }
-}
-
-void avltree_inorder(avltree *t, void (*f)(const char *, int)){
-    node_inorder(t->root, f);
-}
-
-// ------------ POSTORDER ---------------
-
-static void node_postorder(node *n, void (*f)(const char *, int)){
-    if (n!=NULL){
-        node_postorder(n->left, f);
-        node_postorder(n->right, f);
-        f(n->key, n->value);
-    }
-}
-
-void avltree_postorder(avltree *t, void (*f)(const char *, int)){
-    node_postorder(t->root, f);
-}
-
-// ------------ PREORDER ----------------
-
-static void node_preorder(node *n, void (*f)(const char *, int)){
-    if (n!=NULL){
-        f(n->key, n->value);
-        node_preorder(n->left, f);
-        node_postorder(n->right, f);
-    }
-}
-
-void avltree_preorder(avltree *t, void (*f)(const char *, int)){
-    node_preorder(t->root, f);
-}
-
-
-// -------------- PRINT -----------
-
-static void node_print(node *n){
-    printf("( ");
-    if (n!=NULL){
-        if (n->left!=NULL){
-            node_print(n->left);
-            printf(" ");
-        }
-        printf("%s:%d ", n->key, n->value);
-        if (n->right!=NULL){
-            node_print(n->right);
-            printf(" ");
-        }
-    }
-    printf(")");
-}
-
-void avltree_print(avltree *t){
-    node_print(t->root);
-    printf("\n");
 }

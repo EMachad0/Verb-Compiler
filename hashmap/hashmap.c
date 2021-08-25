@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "hashmap.h"
 #include "avltree.h"
 
@@ -15,7 +16,7 @@ hashmap *hashmap_create(int capacity){
     if (capacity<1) return NULL;
     
     hashmap *res = malloc(sizeof(hashmap));
-    res->buffer = malloc(sizeof(avltree *)*capacity);
+    res->buffer = malloc(sizeof(avltree *) * capacity);
     res->capacity = capacity;
     
     return res;
@@ -23,23 +24,26 @@ hashmap *hashmap_create(int capacity){
 
 // Uma função para inserir valores dentro da tabela. Essa função irá receber como argumentos a tabela desejada, a chave desejada, e o valor a ser salvo.
 // A função deverá encontrar o bucket correto para a chave, e inserir o valor (ou atualizá-lo, caso o valor já exista no bucket). 
-void hashmap_set(hashmap *map, const char *key, int value){
-    int index = elf_hash(key)%map->capacity;
+void hashmap_set(hashmap *map, const char *key, void *value){
+    int index = elf_hash(key) % map->capacity;
 
     if (map->buffer[index]==NULL){
         map->buffer[index] = avltree_create();
     }
+
     avltree_insert(map->buffer[index], key, value);
 }
 
 // Uma função para procurar o valor de uma chave dentro da tabela. Essa função irá receber como argumentos a tabela desejada e a chave desejada. 
 // Caso a chave não exista dentro da tabela, a função deve retornar zero.
-int hashmap_get(hashmap *map, const char *key){
+void *hashmap_get(hashmap *map, const char *key){
     int index = elf_hash(key)%map->capacity;
 
     if (map->buffer[index]!=NULL){
         return avltree_get(map->buffer[index], key);
     }
+
+    fprintf(stderr, "key does not exits");
     return 0;
 }
 
@@ -88,12 +92,12 @@ void hashmap_delete(hashmap *map){
     free(map);
 }
 
-// Printa o hashmap.
-void hashmap_print(hashmap *map){
-    for (int i=0; i<map->capacity; i++)
-        if (map->buffer[i]!=NULL)
-            avltree_print(map->buffer[i]);
-}
+// // Printa o hashmap.
+// void hashmap_print(hashmap *map){
+//     for (int i=0; i<map->capacity; i++)
+//         if (map->buffer[i]!=NULL)
+//             avltree_print(map->buffer[i]);
+// }
 
 /**
  * Função padronizada para calcular o hash de uma string.
