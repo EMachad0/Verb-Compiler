@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "../ast/ast.h"
 
 extern FILE* yyin;
 
@@ -39,7 +38,6 @@ extern FILE* yyin;
     char *str, *op;
     int int_val;
     double flt_val;
-    ast* aast;
 }
 
 %printer { fprintf (yyo, "%s", $$); } <str> <op>;
@@ -62,138 +60,138 @@ extern FILE* yyin;
 
 %type <str> ID STRING INTEGER FLOAT
 %type <op> ATTOP BOOLOP CMPOP BITSHIFTOP UNARYOP EXPOP
-%nterm <aast> block statement optional_block type value expr declaration assignment call
-%nterm <aast> expr_list declaration_list assignment_list flux if elseif else switch
-%nterm <aast> switch_body while do for function
+// %nterm <aast> block statement optional_block type value expr declaration assignment call
+// %nterm <aast> expr_list declaration_list assignment_list flux if elseif else switch
+// %nterm <aast> switch_body while do for function
 
 %start program
 
 %%
 
-program:    block                           { print_dot_tree($1); free_tree($1); }
+program:    block                           { }
     ;
 
-block:  /* nothing */                       { $$ = new_ast("ϵ", NULL, NULL); }
-    |   statement block                     { $$ = new_ast("statement", $1, new_ast("block", $2, NULL)); }
-    |   flux block                          { $$ = new_ast("flux", $1, new_ast("block", $2, NULL)); }
-    |   function block                      { $$ = new_ast("function", $1, new_ast("block", $2, NULL)); }
+block:  /* nothing */                       { }
+    |   statement block                     { }
+    |   flux block                          { }
+    |   function block                      { }
     ;
 
-statement:  declaration ';'                 { $$ = new_ast("declaration", $1, new_ast(";", NULL, NULL)); }
-    |   assignment ';'                      { $$ = new_ast("assignment", $1, new_ast(";", NULL, NULL)); }
-    |   expr ';'                            { $$ = new_ast("expr", $1, new_ast(";", NULL, NULL)); }
-    |   error ';'                           { $$ = new_ast("error", NULL, new_ast(";", NULL, NULL)); }
+statement:  declaration ';'                 { }
+    |   assignment ';'                      { }
+    |   expr ';'                            { }
+    |   error ';'                           { }
     ;
 
-optional_block: statement                   { $$ = new_ast("statement", $1, NULL); }
-    |   '{' block '}'                       { $$ = new_ast("{", NULL, new_ast("block", $2, new_ast("}", NULL, NULL))); }
-    |   '{' error '}'                       { $$ = new_ast("{", NULL, new_ast("error", NULL, new_ast("}", NULL, NULL))); }
+optional_block: statement                   { }
+    |   '{' block '}'                       { }
+    |   '{' error '}'                       { }
     ;
 
-type:   'I'                                 { $$ = new_ast("I", NULL, NULL); }
-    |   'D'                                 { $$ = new_ast("D", NULL, NULL); }
-    |   'S'                                 { $$ = new_ast("S", NULL, NULL); }
+type:   'I'                                 { }
+    |   'D'                                 { }
+    |   'S'                                 { }
     ;
 
-value:  INTEGER                             { $$ = new_ast($1, NULL, NULL); }
-    |   FLOAT                               { $$ = new_ast($1, NULL, NULL); }
-    |   STRING                              { $$ = new_ast($1, NULL, NULL); }
+value:  INTEGER                             { }
+    |   FLOAT                               { }
+    |   STRING                              { }
     ;    
 
-expr:   value                               { $$ = new_ast("value", $1, NULL); }
-    |   call                                { $$ = new_ast("call", $1, NULL); }
-    |   expr '<' expr                       { $$ = new_ast("expr", $1, new_ast("<", NULL, new_ast("expr", $3, NULL))); }
-    |   expr '>' expr                       { $$ = new_ast("expr", $1, new_ast(">", NULL, new_ast("expr", $3, NULL))); }
-    |   expr BOOLOP expr                    { $$ = new_ast("expr", $1, new_ast($2, NULL, new_ast("expr", $3, NULL))); }
-    |   expr '|' expr                       { $$ = new_ast("expr", $1, new_ast("|", NULL, new_ast("expr", $3, NULL))); }
-    |   expr '^' expr                       { $$ = new_ast("expr", $1, new_ast("^", NULL, new_ast("expr", $3, NULL))); }
-    |   expr '&' expr                       { $$ = new_ast("expr", $1, new_ast("&", NULL, new_ast("expr", $3, NULL))); }
-    |   expr CMPOP expr                     { $$ = new_ast("expr", $1, new_ast($2, NULL, new_ast("expr", $3, NULL))); }
-    |   expr BITSHIFTOP expr                { $$ = new_ast("expr", $1, new_ast($2, NULL, new_ast("expr", $3, NULL))); }
-    |   expr '+' expr                       { $$ = new_ast("expr", $1, new_ast("+", NULL, new_ast("expr", $3, NULL))); }
-    |   expr '-' expr                       { $$ = new_ast("expr", $1, new_ast("-", NULL, new_ast("expr", $3, NULL))); }
-    |   expr '*' expr                       { $$ = new_ast("expr", $1, new_ast("*", NULL, new_ast("expr", $3, NULL))); }
-    |   expr '/' expr                       { $$ = new_ast("expr", $1, new_ast("/", NULL, new_ast("expr", $3, NULL))); }
-    |   expr '%' expr                       { $$ = new_ast("expr", $1, new_ast("%", NULL, new_ast("expr", $3, NULL))); }
-    |   '-' expr %prec UNARYOP              { $$ = new_ast("-", NULL, new_ast("expr", $2, NULL)); }
-    |   '!' expr                            { $$ = new_ast("!", NULL, new_ast("expr", $2, NULL)); }
-    |   '~' expr                            { $$ = new_ast("~", NULL, new_ast("expr", $2, NULL)); }
-    |   expr EXPOP expr                     { $$ = new_ast("expr", $1, new_ast($2, NULL, new_ast("expr", $3, NULL))); }
-    |   '(' expr ')'                        { $$ = new_ast("(", NULL, new_ast("expr", $2, new_ast(")", NULL, NULL))); }
-    |   '(' error ')'                       { $$ = new_ast("(", NULL, new_ast("error", NULL, new_ast(")", NULL, NULL))); }
+expr:   value                               { }
+    |   call                                { }
+    |   expr '<' expr                       { }
+    |   expr '>' expr                       { }
+    |   expr BOOLOP expr                    { }
+    |   expr '|' expr                       { }
+    |   expr '^' expr                       { }
+    |   expr '&' expr                       { }
+    |   expr CMPOP expr                     { }
+    |   expr BITSHIFTOP expr                { }
+    |   expr '+' expr                       { }
+    |   expr '-' expr                       { }
+    |   expr '*' expr                       { }
+    |   expr '/' expr                       { }
+    |   expr '%' expr                       { }
+    |   '-' expr %prec UNARYOP              { }
+    |   '!' expr                            { }
+    |   '~' expr                            { }
+    |   expr EXPOP expr                     { }
+    |   '(' expr ')'                        { }
+    |   '(' error ')'                       { }
     ;
 
-declaration:    type ID                     { $$ = new_ast("type", $1, new_ast($2, NULL, NULL)); }
-    |   type ID '=' expr                    { $$ = new_ast("type", $1, new_ast($2, NULL, new_ast("=", NULL, new_ast("expr", $4, NULL)))); }
+declaration:    type ID                     { }
+    |   type ID '=' expr                    { }
     ;
 
-assignment: ID '=' expr                     { $$ = new_ast($1, NULL, new_ast("=", NULL, new_ast("expr", $3, NULL))); }
-    |   ID ATTOP expr                       { $$ = new_ast($1, NULL, new_ast($2, NULL, new_ast("expr", $3, NULL))); }
+assignment: ID '=' expr                     { }
+    |   ID ATTOP expr                       { }
     ;
 
-call:   ID                                  { $$ = new_ast($1, NULL, NULL); }
-    |   ID UNARYOP                          { $$ = new_ast($1, NULL, new_ast($2, NULL, NULL)); }
-    |   UNARYOP ID                          { $$ = new_ast($1, NULL, new_ast($2, NULL, NULL)); }
-    |   ID '(' ')'                          { $$ = new_ast($1, NULL, new_ast("(", NULL,  new_ast(")", NULL, NULL))); }
-    |   ID '(' expr_list ')'                { $$ = new_ast($1, NULL, new_ast("(", NULL, new_ast("expr_list", $3, new_ast(")", NULL, NULL)))); }
-    |   ID '(' error ')'                    { $$ = new_ast($1, NULL, new_ast("(", NULL, new_ast("error", NULL, new_ast(")", NULL, NULL)))); }
+call:   ID                                  { }
+    |   ID UNARYOP                          { }
+    |   UNARYOP ID                          { }
+    |   ID '(' ')'                          { }
+    |   ID '(' expr_list ')'                { }
+    |   ID '(' error ')'                    { }
     ;
 
-expr_list:  expr                            { $$ = new_ast("expr", $1, NULL); }
-    |   expr ',' expr_list                  { $$ = new_ast("expr", $1, new_ast(",", NULL, new_ast("expr_list", $3, NULL))); }
+expr_list:  expr                            { }
+    |   expr ',' expr_list                  { }
     ;
 
-declaration_list:   declaration             { $$ = new_ast("declaration", $1, NULL); }
-    |   declaration ',' declaration_list    { $$ = new_ast("declaration", $1, new_ast(",", NULL, new_ast("declaration_list", $3, NULL))); }
+declaration_list:   declaration             { }
+    |   declaration ',' declaration_list    { }
     ;
 
-assignment_list:    assignment              { $$ = new_ast("assignment", $1, NULL); }
-    |   assignment ',' assignment_list      { $$ = new_ast("assignment", $1, new_ast(",", NULL, new_ast("assignment_list", $3, NULL))); }
+assignment_list:    assignment              { }
+    |   assignment ',' assignment_list      { }
     ;
 
-flux:   if                                  { $$ = new_ast("if", $1, NULL); }
-    |   switch                              { $$ = new_ast("switch", $1, NULL); }
-    |   while                               { $$ = new_ast("while", $1, NULL); }
-    |   do                                  { $$ = new_ast("do", $1, NULL); }
-    |   for                                 { $$ = new_ast("for", $1, NULL); }
+flux:   if                                  { }
+    |   switch                              { }
+    |   while                               { }
+    |   do                                  { }
+    |   for                                 { }
     ;
 
-if:     '?' '(' expr ')' optional_block elseif else     { $$ = new_ast("?", NULL, new_ast("(", NULL, new_ast("expr", $3, new_ast(")", NULL, new_ast("optional_block", $5, new_ast("elseif", $6, new_ast("else", $7, NULL))))))); }
-    |   '?' '(' error ')' optional_block elseif else    { $$ = new_ast("?", NULL, new_ast("(", NULL, new_ast("error", NULL, new_ast(")", NULL, new_ast("optional_block", $5, new_ast("elseif", $6, new_ast("else", $7, NULL))))))); }
+if:     '?' '(' expr ')' optional_block elseif else     { }
+    |   '?' '(' error ')' optional_block elseif else    { }
     ;
 
-elseif: /* nothing */                                   { $$ = new_ast("ϵ", NULL, NULL); }
-    |   '$' '(' expr ')' optional_block elseif          { $$ = new_ast("$", NULL, new_ast("(", NULL, new_ast("expr", $3, new_ast(")", NULL, new_ast("optional_block", $5, new_ast("elseif", $6, NULL)))))); }
-    |   '$' '(' error ')' optional_block elseif         { $$ = new_ast("$", NULL, new_ast("(", NULL, new_ast("error", NULL, new_ast(")", NULL, new_ast("optional_block", $5, new_ast("elseif", $6, NULL)))))); }
+elseif: /* nothing */                                   { }
+    |   '$' '(' expr ')' optional_block elseif          { }
+    |   '$' '(' error ')' optional_block elseif         { }
     ;
 
-else:   /* nothing */                                   { $$ = new_ast("ϵ", NULL, NULL); }
-    |   ':' optional_block                              { $$ = new_ast(":", NULL, new_ast("optional_block", $2, NULL)); }
+else:   /* nothing */                                   { }
+    |   ':' optional_block                              { }
     ;
 
-switch: '#' '{' switch_body '}'                         { $$ = new_ast("#", NULL, new_ast("{", NULL, new_ast("switch_body", $3, new_ast("}", NULL, NULL)))); }
-    |   '#' '{' error '}'                               { $$ = new_ast("#", NULL, new_ast("{", NULL, new_ast("error", NULL, new_ast("}", NULL, NULL)))); }
+switch: '#' '{' switch_body '}'                         { }
+    |   '#' '{' error '}'                               { }
     ;
 
-switch_body:    /* nothing */                           { $$ = new_ast("ϵ", NULL, NULL); }
-    |   value ':' statement switch_body                 { $$ = new_ast("value", $1, new_ast(":", NULL, new_ast("statement", $3, new_ast("switch_body", $4, NULL)))); }
+switch_body:    /* nothing */                           { }
+    |   value ':' statement switch_body                 { }
     ;
 
-while:  'W' '(' expr ')' optional_block else            { $$ = new_ast("W", NULL, new_ast("(", NULL, new_ast("expr", $3, new_ast(")", NULL, new_ast("optional_block", $5, new_ast("else", $6, NULL)))))); }
-    |   'W' '(' error ')' optional_block else           { $$ = new_ast("W", NULL, new_ast("(", NULL, new_ast("error", NULL, new_ast(")", NULL, new_ast("optional_block", $5, new_ast("else", $6, NULL)))))); }
+while:  'W' '(' expr ')' optional_block else            { }
+    |   'W' '(' error ')' optional_block else           { }
     ;
 
-do:     'O' '{' block '}' while                         { $$ = new_ast("O", NULL, new_ast("{", NULL, new_ast("block", $3, new_ast("}", NULL, new_ast("while", $5, NULL))))); }
+do:     'O' '{' block '}' while                         { }
     ;
 
-for:    'F' '(' expr ')' optional_block else                                            { $$ = new_ast("F", NULL, new_ast("(", NULL, new_ast("expr", $3, new_ast(")", NULL, new_ast("optional_block", $5, new_ast("else", $6, NULL)))))); }
-    |   'F' '(' INTEGER ';' expr ';' INTEGER ')' optional_block else                    { $$ = new_ast("F", NULL, new_ast("(", NULL, new_ast($3, NULL, new_ast(";", NULL, new_ast("expr", $5, new_ast(";", NULL, new_ast($7, NULL, new_ast(")", NULL, new_ast("optional_block", $9, new_ast("else", $10, NULL)))))))))); }
-    |   'F' '(' declaration_list ';' expr ';' assignment_list ')' optional_block else   { $$ = new_ast("F", NULL, new_ast("(", NULL, new_ast("declaration_list", $3, new_ast(";", NULL, new_ast("expr", $5, new_ast(";", NULL, new_ast("assignment_list", $5, new_ast(")", NULL, new_ast("optional_block", $9, new_ast("else", $10, NULL)))))))))); }
-    |   'F' '(' error ')' optional_block else                                           { $$ = new_ast("F", NULL, new_ast("(", NULL, new_ast("error", NULL, new_ast(")", NULL, new_ast("optional_block", $5, new_ast("else", $6, NULL)))))); }
+for:    'F' '(' expr ')' optional_block else                                            { }
+    |   'F' '(' INTEGER ';' expr ';' INTEGER ')' optional_block else                    { }
+    |   'F' '(' declaration_list ';' expr ';' assignment_list ')' optional_block else   { }
+    |   'F' '(' error ')' optional_block else                                           { }
     ;
 
-function:   type ID '(' declaration_list ')' optional_block                             { $$ = new_ast("type", $1, new_ast($2, NULL, new_ast("(", NULL, new_ast("declaration_list", $4, new_ast(")", NULL, new_ast("optional_block", $6, NULL)))))); }
-    |   type ID '(' error ')' optional_block                                            { $$ = new_ast("type", $1, new_ast($2, NULL, new_ast("(", NULL, new_ast("error", NULL, new_ast(")", NULL, new_ast("optional_block", $6, NULL)))))); }
+function:   type ID '(' declaration_list ')' optional_block                             { }
+    |   type ID '(' error ')' optional_block                                            { }
     ;
 
 %%
@@ -253,11 +251,9 @@ void free_uctx(user_context* uctx) {
 }
 
 int main(int argc, const char **argv) {
-    bool do_dot = false;
     yyin = stdin;
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-p") == 0) yydebug = 1;
-        else if (strcmp(argv[i], "-d") == 0) do_dot = true;
         else {
             printf("Compiling %s\n", argv[i]);
             yyin = fopen(argv[i], "r");
@@ -272,6 +268,5 @@ int main(int argc, const char **argv) {
 
     free_uctx(uctx);
 
-    if (do_dot) system("dot -Tpng verb_ast.dot -o ast.png");
 	return 0;
 }

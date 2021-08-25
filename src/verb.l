@@ -1,6 +1,5 @@
 %option noyywrap
 %{
-#include "../ast/ast.h"
 #include "../output/verb.tab.h"
 %}
 
