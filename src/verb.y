@@ -41,8 +41,8 @@ extern FILE* yyin;
 }
 
 %printer { fprintf (yyo, "%s", $$); } <sval>;
-// %printer { fprintf (yyo, "%d", $$); } <ival>;
-// %printer { fprintf (yyo, "%g", $$); } <fval>;
+%printer { fprintf (yyo, "%d", $$); } <ival>;
+%printer { fprintf (yyo, "%g", $$); } <fval>;
 
 %token ID
 %token INTEGER FLOAT STRING
@@ -58,7 +58,9 @@ extern FILE* yyin;
 %right '!' '~' UNARYOP
 %right EXPOP
 
-%type <sval> ID STRING INTEGER FLOAT
+%type <sval> ID STRING
+%type <ival> INTEGER
+%type <fval> FLOAT
 %type <sval> ATTOP BOOLOP CMPOP BITSHIFTOP UNARYOP EXPOP
 // %nterm <aast> block statement optional_block type value expr declaration assignment call
 // %nterm <aast> expr_list declaration_list assignment_list flux if elseif else switch
