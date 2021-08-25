@@ -90,7 +90,7 @@ program:                                { generate_header(source_file); }
 block:  /* nothing */                       { }
     |   statement block                     { }
     |   flux block                          { }
-    |   function block                      { }
+    // |   function block                      { }
     ;
 
 statement:  declaration ';'                 { }
@@ -116,25 +116,25 @@ value:  INTEGER                             { }
 
 expr:   value                               { }
     |   call                                { }
-    |   expr '<' expr                       { }
-    |   expr '>' expr                       { }
-    |   expr BOOLOP expr                    { }
-    |   expr '|' expr                       { }
-    |   expr '^' expr                       { }
-    |   expr '&' expr                       { }
-    |   expr CMPOP expr                     { }
-    |   expr BITSHIFTOP expr                { }
+    // |   expr '<' expr                       { }
+    // |   expr '>' expr                       { }
+    // |   expr BOOLOP expr                    { }
+    // |   expr '|' expr                       { }
+    // |   expr '^' expr                       { }
+    // |   expr '&' expr                       { }
+    // |   expr CMPOP expr                     { }
+    // |   expr BITSHIFTOP expr                { }
     |   expr '+' expr                       { }
     |   expr '-' expr                       { }
-    |   expr '*' expr                       { }
-    |   expr '/' expr                       { }
-    |   expr '%' expr                       { }
-    |   '-' expr %prec UNARYOP              { }
-    |   '!' expr                            { }
-    |   '~' expr                            { }
-    |   expr EXPOP expr                     { }
-    |   '(' expr ')'                        { }
-    |   '(' error ')'                       { }
+    // |   expr '*' expr                       { }
+    // |   expr '/' expr                       { }
+    // |   expr '%' expr                       { }
+    // |   '-' expr %prec UNARYOP              { }
+    // |   '!' expr                            { }
+    // |   '~' expr                            { }
+    // |   expr EXPOP expr                     { }
+    // |   '(' expr ')'                        { }
+    // |   '(' error ')'                       { }
     ;
 
 declaration:    type ID                     { }
@@ -146,16 +146,16 @@ assignment: ID '=' expr                     { }
     ;
 
 call:   ID                                  { }
-    |   ID UNARYOP                          { }
-    |   UNARYOP ID                          { }
-    |   ID '(' ')'                          { }
-    |   ID '(' expr_list ')'                { }
-    |   ID '(' error ')'                    { }
+    // |   ID UNARYOP                          { }
+    // |   UNARYOP ID                          { }
+    // |   ID '(' ')'                          { }
+    // |   ID '(' expr_list ')'                { }
+    // |   ID '(' error ')'                    { }
     ;
 
-expr_list:  expr                            { }
-    |   expr ',' expr_list                  { }
-    ;
+// expr_list:  expr                            { }
+//     |   expr ',' expr_list                  { }
+//     ;
 
 declaration_list:   declaration             { }
     |   declaration ',' declaration_list    { }
@@ -206,9 +206,9 @@ for:    'F' '(' expr ')' optional_block else                                    
     |   'F' '(' error ')' optional_block else                                           { }
     ;
 
-function:   type ID '(' declaration_list ')' optional_block                             { }
-    |   type ID '(' error ')' optional_block                                            { }
-    ;
+// function:   type ID '(' declaration_list ')' optional_block                             { }
+//     |   type ID '(' error ')' optional_block                                            { }
+//     ;
 
 %%
 
