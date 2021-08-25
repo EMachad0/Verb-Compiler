@@ -3,9 +3,15 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdbool.h>
+#include "../src/jasmin.h"
+#include "../vector/vector.h"
 
 extern FILE* yyin;
 
+bool found_error = false;
+
+const char* source_file = "";
 %}
 
 %code requires {
@@ -38,6 +44,12 @@ extern FILE* yyin;
     char *sval;
     int ival;
     double fval;
+    struct {
+		int type;
+	} expr_val;
+	struct {
+		struct vector *go_in, *go_out, *go_next;
+	} flow_val;
 }
 
 %printer { fprintf (yyo, "%s", $$); } <sval>;
@@ -70,7 +82,7 @@ extern FILE* yyin;
 
 %%
 
-program:    block                           { }
+program:    block                           { generate_header(source_file); generate_footer(); }
     ;
 
 block:  /* nothing */                       { }
@@ -258,17 +270,22 @@ int main(int argc, const char **argv) {
         if (strcmp(argv[i], "-p") == 0) yydebug = 1;
         else {
             printf("Compiling %s\n", argv[i]);
+            source_file = argv[i];
             yyin = fopen(argv[i], "r");
         } 
     }
 
     user_context* uctx = init_uctx();
+    jasmin_init();
 
 	do {
 		yyparse(uctx);
 	} while(!feof(yyin));
 
+    if (!found_error && source_file) print_code();
+
     free_uctx(uctx);
+    jasmin_delete();
 
 	return 0;
 }
