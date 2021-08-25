@@ -1,5 +1,6 @@
-#include "vector.h"
 #include <stdlib.h>
+#include <stdio.h>
+#include "vector.h"
 
 struct vector
 {
@@ -11,7 +12,7 @@ struct vector
 vector* vector_create(){
     vector* res = malloc(sizeof(vector));
     
-    const int cap = 8;
+    const int cap = 256;
     res->buffer = malloc(sizeof(void *)*cap);
     res->size = 0;
     res->capacity = cap;
@@ -22,6 +23,14 @@ vector* vector_create(){
 void vector_delete(vector* vector){
     free(vector->buffer);
     free(vector);
+}
+
+void vector_pushback_char(vector *v, char *s) {
+    vector_pushback(v, s);
+}
+
+void vector_pushback_ll(vector *v, long long value) {
+    vector_pushback(v, (void *) value);
 }
 
 void vector_pushback(vector* vector, void *value){
@@ -38,8 +47,23 @@ void vector_pushback(vector* vector, void *value){
 }
 
 void *vector_get(vector* vector, int i){
-    if (i >= vector->size) return 0;
+    if (i >= vector->size) {
+        fprintf(stderr, "NullPointerException\n");
+        return 0;
+    } 
     return vector->buffer[i];
+}
+
+char *vector_get_char(vector *vector, int i) {
+    if (i >= vector->size) {
+        fprintf(stderr, "NullPointerException\n");
+        return "erro";
+    }
+    return (char *) vector_get(vector, i);
+}
+
+long long vector_get_ll(vector *vector, int i) {
+    return (long long) vector_get(vector, i);
 }
 
 void *vector_pop(vector* vector){
