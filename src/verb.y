@@ -220,9 +220,17 @@ static void location_print(FILE *out, const YYLTYPE* loc) {
     else if (loc->first_column < loc->last_column) fprintf (out, "-%d", loc->last_column);
 }
 
+static void error_line_print(FILE *out, const YYLTYPE* loc, const user_context* uctx) {
+    fprintf(stderr, "%5d | %s\n", loc->first_line, uctx->line);
+    fprintf(stderr, "%5s | %*s", "", loc->first_column - 1, "^");
+    for (int i = loc->last_column - loc->first_column - 1; 0 <= i; --i) putc(i != 0? '~':'^', stderr);
+    putc('\n', stderr);
+}
+
 void yyerror (const YYLTYPE* loc, const user_context* uctx, const char *s) {
     location_print(stderr, loc);
     fprintf (stderr, ": %s\n", s);
+    error_line_print(stderr, loc, uctx);
 }
 
 static int yyreport_syntax_error(const yypcontext_t* ctx, user_context* uctx) {
@@ -247,12 +255,7 @@ static int yyreport_syntax_error(const yypcontext_t* ctx, user_context* uctx) {
             fprintf(stderr, " before %s", yysymbol_name(lookahead));
     }
     fprintf(stderr, "\n");
-    {
-        fprintf(stderr, "%5d | %s\n", loc->first_line, uctx->line);
-        fprintf(stderr, "%5s | %*s", "", loc->first_column - 1, "^");
-        for (int i = loc->last_column - loc->first_column - 1; 0 <= i; --i) putc(i != 0? '~':'^', stderr);
-        putc('\n', stderr);
-    }
+    error_line_print(stderr, loc, uctx);
     return res;
 }
 
