@@ -16,7 +16,7 @@ void generate_header();
 void write_code(char *s);
 bool check_id(char* id);
 void define_var(char* id, int type);
-void assign_var(char* id);
+void assign_var(char* id, int type);
 int load_var(char* id);
 void stdout_code(int );
 int arith(int t1, int t2, char* opcode);
@@ -24,5 +24,6 @@ int int_arith(int t1, int t2, char* opcode);
 symbol* get_id(char* id);
 char* get_type_string(int type);
 void std_out_ln();
+void cast(int t1, int t2);
 
 #endif

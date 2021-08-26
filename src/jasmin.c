@@ -87,8 +87,9 @@ void define_var(char* id, int type) {
 	set_symbol(id_map, id, id_cont++, type);
 }
 
-void assign_var(char* id) {
+void assign_var(char* id, int type) {
 	symbol* smb = get_symbol(id_map, id);
+	if (smb->type != type) cast(type, smb->type);
 	if (smb->type == INT_T) {
 		write_code(concat("istore ", i_to_str(smb->value)));
 	} else if (smb->type == FLOAT_T) {
@@ -140,7 +141,10 @@ int arith(int t1, int t2, char* opcode) {
 		write_code(concat((t1 == INT_T)? "i":"f", opcode));
 		return t1;
 	}
-	print_error("Type cast not implemented"); // todo type cast
+	if (t1 == FLOAT_T) cast(t2, t1);
+	else write_code("swap"), cast(t1, t2);
+	write_code(concat("f", opcode));
+	return FLOAT_T;
 }
 
 int int_arith(int t1, int t2, char* opcode) {
@@ -150,6 +154,15 @@ int int_arith(int t1, int t2, char* opcode) {
 	}
 	write_code(concat("i", opcode));
 	return INT_T;
+}
+
+void cast(int t1, int t2) {
+	if (t1 == t2) return;
+	if (t1 == STR_T || t2 == STR_T) {
+		print_error("Impossible to cast string");
+		return;
+	}
+	write_code(concat_many(3, t1 == INT_T? "i":"f", "2", t2 == INT_T? "i":"f"));
 }
 
 char* get_type_string(int type) {

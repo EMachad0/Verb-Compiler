@@ -138,10 +138,10 @@ expr:   value                               { $$ = $1; }
     ;
 
 declaration:    type ID                     { define_var($2, $1); }
-    |   type ID '=' expr                    { define_var($2, $1); assign_var($2); }
+    |   type ID '=' expr                    { define_var($2, $1); assign_var($2, $4); }
     ;
 
-assignment: ID '=' expr                     { assign_var($1); }
+assignment: ID '=' expr                     { assign_var($1, $3); }
     |   ID ATTOP expr                       { }
     ;
 
