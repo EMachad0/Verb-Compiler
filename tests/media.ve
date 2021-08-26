@@ -2,4 +2,4 @@ D a = 5.2, b, c = 10 + 5, d = 2;
 
 D media = (2*a + 3*b + 5*c) / 10;
 
-print("MEDIA = %f\n", media);
+P("MEDIA = ", media);

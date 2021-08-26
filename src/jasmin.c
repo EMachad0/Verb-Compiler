@@ -27,12 +27,13 @@ void loc_uctx_init(YYLTYPE* _loc, user_context* _uctx) {
 	loc = _loc;
 }
 
-void write_code(char *s) {
+int write_code(char *s) {
 	vector_pushback_char(code_list, s);
+	return vector_size(code_list);
 }
 
 void write_line(int n) {
-	write_code(concat(".line ", i_to_str(n))); /* TODO LINE GENERATION */
+	write_code(concat(".line ", i_to_str(n)));
 }
 
 void generate_header(char* source_file) {
@@ -102,17 +103,34 @@ void write_load(int type, int lid) {
 	}
 }
 
-void write_label(int n) {
-	write_code(concat_many(3, "L_", i_to_str(n), ":"));
+int write_label() {
+	write_code(concat_many(3, "L_", i_to_str(label_cont++), ":"));
+	return label_cont;
 }
 
-void assign_var(char* id, int type) {
+void assign_var(char* id, int type, char* op) {
 	if (!check_id(id)) {
 		print_error(concat_many(3, RED_ERROR ": variable ", to_yellow(id), " not declared"));
 		return;
 	}
 	symbol* smb = get_symbol(id_map, id);
-	if (smb->type != type) cast(type, smb->type);
+	if (strcmp(op, "=") != 0) {
+		write_load(smb->type, smb->lid);
+		if (strcmp(op, "+=") == 0) arith(type, smb->type, "add");
+		else if (strcmp(op, "*=") == 0) arith(type, smb->type, "mul");
+		else if (strcmp(op, "&=") == 0) int_arith(type, smb->type, "and");
+		else if (strcmp(op, "^=") == 0) int_arith(type, smb->type, "xor");
+		else if (strcmp(op, "|=") == 0) int_arith(type, smb->type, "or");
+		else {
+			write_code("swap");
+			if (strcmp(op, "-=") == 0) arith(smb->type, type, "sub");
+			else if (strcmp(op, "/=") == 0) arith(smb->type, type, "div");
+			else if (strcmp(op, "%=") == 0) arith(smb->type, type, "rem");
+			else if (strcmp(op, "<<=") == 0) int_arith(smb->type, type, "shl");
+			else if (strcmp(op, ">>=") == 0) int_arith(smb->type, type, "shr");
+			else if (strcmp(op, "**") == 0) print_error("Exponentiation not yet supported :(");
+		}
+	} else if (smb->type != type) cast(type, smb->type);
 	write_store(smb->type, smb->lid);
 }
 

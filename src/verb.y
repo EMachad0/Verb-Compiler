@@ -76,10 +76,7 @@ const char* source_file = "";
 %type <ival> INTEGER
 %type <fval> FLOAT
 %type <sval> ATTOP BOOLOP CMPOP BITSHIFTOP UNARYOP EXPOP
-// %nterm <aast> block statement optional_block type value expr declaration assignment call
-// %nterm <aast> expr_list declaration_list assignment_list flux if elseif else switch
-// %nterm <aast> switch_body while do for function
-%nterm <ival> expr type value call
+%nterm <ival> expr type value call label goto
 %nterm <symb_val> decla_or_assign
 %nterm <vec_val> decla_or_assign_list
 
@@ -155,8 +152,8 @@ decla_or_assign: ID                         { $$ = make_symbol($1, -1, -1); }
     |   ID '=' expr                         { $$ = make_symbol($1, -1, $3); }
     ;
 
-assignment: ID '=' expr                     { assign_var($1, $3); }
-    |   ID ATTOP expr                       { }
+assignment: ID '=' expr                     { assign_var($1, $3, "="); }
+    |   ID ATTOP expr                       { assign_var($1, $3, $2); }
     ;
 
 call:   ID                                  { $$ = load_var($1); }
@@ -226,8 +223,15 @@ for:    'F' '(' expr ')' optional_block else                                    
 
 print_list: expr                           { stdout_code($1); }
     |   expr { stdout_code($1); } ',' print_list                
+    ;
 
 print:  'P' '(' print_list ')'             { std_out_ln();    }
+    ;
+
+label:  /* nothing */   { $$ = write_label(); }
+    ;
+
+goto:  /* nothing */   { $$ = write_code("goto "); }
     ;
 
 %%
