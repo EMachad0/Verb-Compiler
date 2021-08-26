@@ -81,7 +81,7 @@ const char* source_file = "";
 
 %%
 
-program:                                { generate_header(source_file); } 
+program:                                { loc_uctx_init(&@$, uctx); generate_header(source_file); } 
         block
                                         { generate_footer(); }
     ;

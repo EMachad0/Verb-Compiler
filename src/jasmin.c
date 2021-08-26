@@ -11,6 +11,8 @@
 int id_cont;
 hashmap* id_map;
 vector* code_list;
+user_context* uctx;
+YYLTYPE* loc;
 
 void jasmin_init() {
 	id_cont = 1;
@@ -21,6 +23,11 @@ void jasmin_init() {
 void jasmin_delete() {
     hashmap_delete(id_map);
     vector_delete(code_list);
+}
+
+void loc_uctx_init(YYLTYPE* _loc, user_context* _uctx) {
+	uctx = _uctx;
+	loc = _loc;
 }
 
 void write_code(char *s) {
@@ -58,6 +65,10 @@ void print_code(void) {
         fprintf(f, "%s\n", vector_get_char(code_list, i));
     }
     fclose(f);
+}
+
+void print_error(char* msg) {
+	yyerror(loc, uctx, msg);
 }
 
 bool check_id(char* id) {
