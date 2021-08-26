@@ -114,16 +114,21 @@ void stdout_code(int type) {
 	if (type == INT_T) {
 		write_code("getstatic java/lang/System/out Ljava/io/PrintStream;");
 		write_code("swap");
-		write_code("invokevirtual java/io/PrintStream/println(I)V");
+		write_code("invokevirtual java/io/PrintStream/print(I)V");
 	} else if (type == FLOAT_T) {
 		write_code("getstatic java/lang/System/out Ljava/io/PrintStream;");
 		write_code("swap");
-		write_code("invokevirtual java/io/PrintStream/println(F)V");
+		write_code("invokevirtual java/io/PrintStream/print(F)V");
 	} else if (type == STR_T) {
 		write_code("getstatic java/lang/System/out Ljava/io/PrintStream;");
 		write_code("swap");
-		write_code("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");	
+		write_code("invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V");	
 	}
+}
+
+void std_out_ln() {
+	write_code("getstatic java/lang/System/out Ljava/io/PrintStream;");
+	write_code("invokevirtual java/io/PrintStream/println()V");
 }
 
 int arith(int t1, int t2, char* opcode) {

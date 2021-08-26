@@ -8,3 +8,5 @@ P(c);
 S hello_world = "Hello World";
 P("Hello Uord");
 P(hello_world);
+
+P("Media = ", 5, " foda ", 1.545, " PI = ", 3.15);

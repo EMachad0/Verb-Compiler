@@ -23,5 +23,6 @@ int arith(int t1, int t2, char* opcode);
 int int_arith(int t1, int t2, char* opcode);
 symbol* get_id(char* id);
 char* get_type_string(int type);
+void std_out_ln();
 
 #endif

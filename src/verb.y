@@ -210,7 +210,10 @@ for:    'F' '(' expr ')' optional_block else                                    
 //     |   type ID '(' error ')' optional_block                                            { }
 //     ;
 
-print:  'P' '(' expr ')'             {   stdout_code($3);    }
+print_list: expr                           { stdout_code($1); }
+    |   expr { stdout_code($1); } ',' print_list                
+
+print:  'P' '(' print_list ')'             { std_out_ln();    }
     ;
 
 %%
