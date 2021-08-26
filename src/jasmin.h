@@ -20,6 +20,8 @@ void assign_var(char* id);
 int load_var(char* id);
 void stdout_code(int );
 int arith(int t1, int t2, char* opcode);
+int int_arith(int t1, int t2, char* opcode);
 symbol* get_id(char* id);
+char* get_type_string(int type);
 
 #endif

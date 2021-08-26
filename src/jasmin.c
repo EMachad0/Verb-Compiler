@@ -138,16 +138,21 @@ int arith(int t1, int t2, char* opcode) {
 	print_error("Type cast not implemented"); // todo type cast
 }
 
-int arith(int t1, int t2, char* opcode) {
-	if (t1 == STR_T || t2 == STR_T) {
-		print_error("Invalid operator for type string literal");
+int int_arith(int t1, int t2, char* opcode) {
+	if (t1 != INT_T || t2 != INT_T) {
+		print_error(concat_many(5,"Invalid operator for types ",get_type_string(t1)," and ",get_type_string(t2)," expect INT_T"));
 		return ERROR_T;
 	}
-	if (t1 == t2) {
-		write_code(concat((t1 == INT_T)? "i":"f", opcode));
-		return t1;
+	write_code(concat("i", opcode));
+	return INT_T;
+}
+
+char* get_type_string(int type) {
+	switch (type) {
+		case INT_T: return "INT_T";
+		case STR_T: return "STR_T";
+		case FLOAT_T: return "FLOAT_T";
 	}
-	print_error("Type cast not implemented"); // todo type cast
 }
 
 symbol* get_id(char* id) {
