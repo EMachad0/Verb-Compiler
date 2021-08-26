@@ -27,8 +27,9 @@ void loc_uctx_init(YYLTYPE* _loc, user_context* _uctx) {
 	loc = _loc;
 }
 
-void write_code(char *s) {
+int write_code(char *s) {
 	vector_pushback_char(code_list, s);
+	return vector_size(code_list);
 }
 
 void write_line(int n) {
@@ -102,8 +103,9 @@ void write_load(int type, int lid) {
 	}
 }
 
-void write_label(int n) {
-	write_code(concat_many(3, "L_", i_to_str(n), ":"));
+int write_label() {
+	write_code(concat_many(3, "L_", i_to_str(label_cont++), ":"));
+	return label_cont;
 }
 
 void assign_var(char* id, int type, char* op) {

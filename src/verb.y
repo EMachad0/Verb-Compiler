@@ -79,7 +79,7 @@ const char* source_file = "";
 // %nterm <aast> block statement optional_block type value expr declaration assignment call
 // %nterm <aast> expr_list declaration_list assignment_list flux if elseif else switch
 // %nterm <aast> switch_body while do for function
-%nterm <ival> expr type value call
+%nterm <ival> expr type value call label goto
 %nterm <symb_val> decla_or_assign
 %nterm <vec_val> decla_or_assign_list
 
@@ -227,8 +227,14 @@ for:    'F' '(' expr ')' optional_block else                                    
 print_list: expr                           { stdout_code($1); }
     |   expr { stdout_code($1); } ',' print_list                
     ;
-    
+
 print:  'P' '(' print_list ')'             { std_out_ln();    }
+    ;
+
+label:  /* nothing */   { $$ = write_label(); }
+    ;
+
+goto:  /* nothing */   { $$ = write_code("goto "); }
     ;
 
 %%
