@@ -1,0 +1,7 @@
+// ------------
+
+S hello = "Hello ";
+S world = "World";
+S excl = "!";
+
+P(hello, world, excl);
