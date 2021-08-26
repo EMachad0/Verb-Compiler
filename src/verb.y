@@ -76,9 +76,6 @@ const char* source_file = "";
 %type <ival> INTEGER
 %type <fval> FLOAT
 %type <sval> ATTOP BOOLOP CMPOP BITSHIFTOP UNARYOP EXPOP
-// %nterm <aast> block statement optional_block type value expr declaration assignment call
-// %nterm <aast> expr_list declaration_list assignment_list flux if elseif else switch
-// %nterm <aast> switch_body while do for function
 %nterm <ival> expr type value call label goto
 %nterm <symb_val> decla_or_assign
 %nterm <vec_val> decla_or_assign_list
