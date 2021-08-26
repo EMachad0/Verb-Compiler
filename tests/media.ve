@@ -1,6 +1,4 @@
-D a = input();
-D b = input();
-D c = input();
+D a = 5.2, b, c = 10 + 5, d = 2;
 
 D media = (2*a + 3*b + 5*c) / 10;
 
