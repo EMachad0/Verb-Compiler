@@ -122,13 +122,13 @@ value:  INTEGER                             { $$ = INT_T; write_code(concat("ldc
 
 expr:   value                               { $$ = $1; }
     |   call                                { $$ = $1; }
-    // |   expr '<' expr                       { }
-    // |   expr '>' expr                       { }
-    // |   expr BOOLOP expr                    { }
+    |   expr '<' expr                       { $$ = cmp_arith($1, $3, "<"); }
+    |   expr '>' expr                       { $$ = cmp_arith($1, $3, ">"); }
+    |   expr CMPOP expr                     { $$ = cmp_arith($1, $3, $2); }
     |   expr '|' expr                       { $$ = int_arith($1, $3, "or"); }
     |   expr '^' expr                       { $$ = int_arith($1, $3, "xor"); }
     |   expr '&' expr                       { $$ = int_arith($1, $3, "and"); }
-    // |   expr CMPOP expr                     { }
+    |   expr BOOLOP expr                    { $$ = int_arith($1, $3, (strcmp($2, "||") == 0)? "or":"and"); }
     |   expr BITSHIFTOP expr                { $$ = arith($1, $3, ($2[0] == '<')? "shl":"shr"); }
     |   expr '+' expr                       { $$ = arith($1, $3, "add"); }
     |   expr '-' expr                       { $$ = arith($1, $3, "sub"); }
@@ -136,7 +136,7 @@ expr:   value                               { $$ = $1; }
     |   expr '/' expr                       { $$ = arith($1, $3, "div"); }
     |   expr '%' expr                       { $$ = arith($1, $3, "rem"); }
     |   '-' expr %prec UNARYOP              { $$ = arith($2, $2, "neg"); }
-    // |   '!' expr                            { }
+    |   '!' expr                            { $$ = cmp_arith($2, INT_T, "!"); }
     // |   '~' expr                            { }
     // |   expr EXPOP expr                     { }
     |   '(' type ')' expr                   { $$ = $2; cast($4, $2); }
