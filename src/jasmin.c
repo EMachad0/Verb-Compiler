@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "jasmin.h"
-#include "../vector/vector.h"
-#include "../hashmap/hashmap.h"
 #include "../utils/str_utils.h"
 
 int id_cont;
@@ -73,42 +71,57 @@ bool check_id(char* id) {
 	return hashmap_has(id_map, id);
 }
 
-void define_var(char* id, int type) {
+void write_const(int type) {
 	if (type == INT_T) {
 		write_code("iconst_0");
-		write_code(concat("istore ", i_to_str(id_cont)));
 	} else if (type == FLOAT_T) {
 		write_code("fconst_0");
-		write_code(concat("fstore ", i_to_str(id_cont)));
 	} else if (type == STR_T) {
 		write_code("aconst_null");
-		write_code(concat("astore ", i_to_str(id_cont)));
 	}
-	set_symbol(id_map, id, id_cont++, type);
+}
+
+void write_store(int type, int lid) {
+	if (type == INT_T) {
+		write_code(concat("istore ", i_to_str(lid)));
+	} else if (type == FLOAT_T) {
+		write_code(concat("fstore ", i_to_str(lid)));
+	} else if (type == STR_T) {
+		write_code(concat("astore ", i_to_str(lid)));
+	}
+}
+
+void write_load(int type, int lid) {
+	if (type == INT_T) {
+		write_code(concat("iload ", i_to_str(lid)));
+	} else if (type == FLOAT_T) {
+		write_code(concat("fload ", i_to_str(lid)));
+	} else if (type == STR_T) {
+		write_code(concat("aload ", i_to_str(lid)));
+	}
 }
 
 void assign_var(char* id, int type) {
 	symbol* smb = get_symbol(id_map, id);
 	if (smb->type != type) cast(type, smb->type);
-	if (smb->type == INT_T) {
-		write_code(concat("istore ", i_to_str(smb->value)));
-	} else if (smb->type == FLOAT_T) {
-		write_code(concat("fstore ", i_to_str(smb->value)));
-	} else if (smb->type == STR_T) {
-		write_code(concat("astore ", i_to_str(smb->value)));
-	}
+	write_store(smb->type, smb->lid);
 }
 
 int load_var(char* id) {
 	symbol* smb = get_symbol(id_map, id);
-	if (smb->type == INT_T) {
-		write_code(concat("iload ", i_to_str(smb->value)));
-	} else if (smb->type == FLOAT_T) {
-		write_code(concat("fload ", i_to_str(smb->value)));
-	} else if (smb->type == STR_T) {
-		write_code(concat("aload ", i_to_str(smb->value)));
-	}
+	write_load(smb->type, smb->lid);
 	return smb->type;
+}
+
+void define_vars(int type, vector *vec) {
+	for (int i = 0; i < vector_size(vec); i++) {
+		symbol* smb = vector_get(vec, i);
+		if (smb->type != -1) {
+			if (smb->type != type) cast(smb->type, type);
+		} else write_const(type);
+		write_store(type, id_cont);
+		set_symbol(id_map, smb->id, id_cont++, type);
+	}
 }
 
 void stdout_code(int type) {

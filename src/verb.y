@@ -48,11 +48,15 @@ const char* source_file = "";
 	struct {
 		struct vector *go_in, *go_out, *go_next;
 	} flow_val;
+    struct vector* vec_val;
+    struct symbol* symb_val;
 }
 
 %printer { fprintf (yyo, "%s", $$); } <sval>;
 %printer { fprintf (yyo, "%d", $$); } <ival>;
 %printer { fprintf (yyo, "%g", $$); } <fval>;
+%printer { fprintf (yyo, "vec"); } <vec_val>;
+%printer { fprintf (yyo, "symbol {%s, %d, %d}", $$->id, $$->lid, $$->type); } <symb_val>;
 
 %token ID
 %token INTEGER FLOAT STRING
@@ -76,6 +80,8 @@ const char* source_file = "";
 // %nterm <aast> expr_list declaration_list assignment_list flux if elseif else switch
 // %nterm <aast> switch_body while do for function
 %nterm <ival> expr type value call
+%nterm <symb_val> decla_or_assign
+%nterm <vec_val> decla_or_assign_list
 
 %start program
 
@@ -137,8 +143,15 @@ expr:   value                               { $$ = $1; }
     // |   '(' error ')'                       { }
     ;
 
-declaration:    type ID                     { define_var($2, $1); }
-    |   type ID '=' expr                    { define_var($2, $1); assign_var($2, $4); }
+declaration:    type decla_or_assign_list   { define_vars($1, $2); }
+    ;
+
+decla_or_assign_list: decla_or_assign               { $$ = vector_create(); vector_pushback($$, (void*) $1); }
+    |   decla_or_assign ',' decla_or_assign_list    { $$ = $3; vector_pushback($$, (void*) $1); }
+    ;
+
+decla_or_assign: ID                         { $$ = make_symbol($1, -1, -1); }
+    |   ID '=' expr                         { $$ = make_symbol($1, -1, $3); }
     ;
 
 assignment: ID '=' expr                     { assign_var($1, $3); }
@@ -157,8 +170,8 @@ call:   ID                                  { $$ = load_var($1); }
 //     |   expr ',' expr_list                  { }
 //     ;
 
-declaration_list:   declaration             { }
-    |   declaration ',' declaration_list    { }
+declaration_list:   type ID                 { }
+    |   type ID ',' declaration_list        { }
     ;
 
 assignment_list:    assignment              { }
