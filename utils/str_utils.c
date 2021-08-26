@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include "str_utils.h"
 
 char* concat(const char *s1, const char *s2) {
     char *result = malloc(strlen(s1) + strlen(s2) + 1); // +1 for NULL
@@ -43,4 +44,14 @@ char* i_to_str(int v) {
     char* s = malloc(32 * sizeof(char));
     sprintf(s, "%d", v);
     return s;
+}
+
+char *to_red(const char* text) {
+	char *res = concat_many(3, RED, text, RESET);
+	return res;
+}
+
+char *to_yellow(const char* text) {
+	char *res = concat_many(3, YELLOW, text, RESET);
+	return res;
 }

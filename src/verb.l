@@ -1,6 +1,7 @@
 %option noyywrap
 %{
 #include "../output/verb.tab.h"
+#include "../utils/str_utils.h"
 
 extern void write_line(int n);
 
@@ -159,8 +160,9 @@ BLOCK_COMMENT   \/\*[^*]*\*\/
     
 .               {   yylloc->first_column = ++yylloc->last_column;
                     strcat(uctx->line, yytext);
-                    char error[100];
-                    sprintf(error, RED "lexical error " RESET " unexpected '%c' ", yytext[0]);
+                    // char error[100];
+                    char *error = concat_many(5, RED, "lexical error ", RESET, " unexpected ", to_yellow(yytext) );
+                    // sprintf(error, RED "lexical error " RESET " unexpected '%c' ", yytext[0]);
                     yyerror(yylloc, uctx, error);
                     return YYerror;
                 }

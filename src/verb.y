@@ -8,9 +8,6 @@
 #include "../vector/vector.h"
 #include "../utils/str_utils.h"
 
-#define RED "\033[1;31m"
-#define RESET "\x1B[0m"
-
 extern FILE* yyin;
 
 bool found_error = false;

@@ -1,5 +1,12 @@
-I a = ;
+
+// lexical error
+
+K
 I A = 0;
+
+// syntax errors
+
+I a = ;
 
 F() {
     a 9;
@@ -7,3 +14,18 @@ F() {
 }
 
 I a 1234567890;
+
+// semantic errors
+
+I a, b, c;
+I a;
+
+nexiste = 10;
+
+P(z);
+
+I xor = 1.0 ^ 3.14;
+
+I string_int = "neint";
+
+S soma_string = "oloco " + "meu";

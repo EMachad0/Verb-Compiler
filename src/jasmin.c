@@ -103,7 +103,7 @@ void write_load(int type, int lid) {
 
 void assign_var(char* id, int type) {
 	if (!check_id(id)) {
-		print_error(concat_many(3, "error: variable ", id, " not declared"));
+		print_error(concat_many(3, RED_ERROR ": variable ", to_yellow(id), " not declared"));
 		return;
 	}
 	symbol* smb = get_symbol(id_map, id);
@@ -113,7 +113,7 @@ void assign_var(char* id, int type) {
 
 int load_var(char* id) {
 	if (!check_id(id)) {
-		print_error(concat_many(3, "error: variable ", id, " not declared"));
+		print_error(concat_many(3, RED_ERROR ": variable ", to_yellow(id), " not declared"));
 		write_const(INT_T);
 		return INT_T;
 	}
@@ -126,7 +126,7 @@ void define_vars(int type, vector *vec) {
 	for (int i = 0; i < vector_size(vec); i++) {
 		symbol* smb = vector_get(vec, i);
 		if (check_id(smb->id)) {
-			print_error(concat_many(3, "error: variable ", smb->id, " already declared"));
+			print_error(concat_many(3, RED_ERROR ": variable ", to_yellow(smb->id), " already declared"));
 			continue;
 		}
 		if (smb->type != -1) {
@@ -160,7 +160,7 @@ void std_out_ln() {
 
 int arith(int t1, int t2, char* opcode) {
 	if (t1 == STR_T || t2 == STR_T) {
-		print_error("Invalid operator for type string literal");
+		print_error(RED_ERROR ": Invalid operator for type string literal");
 		return ERROR_T;
 	}
 	if (t1 == t2) {
@@ -175,7 +175,7 @@ int arith(int t1, int t2, char* opcode) {
 
 int int_arith(int t1, int t2, char* opcode) {
 	if (t1 != INT_T || t2 != INT_T) {
-		print_error(concat_many(5,"Invalid operator for types ",get_type_string(t1)," and ",get_type_string(t2)," expect INT_T"));
+		print_error(concat_many(6, RED_ERROR ": Invalid operator for types ", to_yellow(get_type_string(t1)), " and ", to_yellow(get_type_string(t2)), " expect ", to_yellow("INT_T")));
 		return ERROR_T;
 	}
 	write_code(concat("i", opcode));
@@ -185,7 +185,7 @@ int int_arith(int t1, int t2, char* opcode) {
 void cast(int t1, int t2) {
 	if (t1 == t2) return;
 	if (t1 == STR_T || t2 == STR_T) {
-		print_error("Impossible to cast string");
+		print_error(RED_ERROR ": Impossible to cast string");
 		return;
 	}
 	write_code(concat_many(3, t1 == INT_T? "i":"f", "2", t2 == INT_T? "i":"f"));
@@ -206,7 +206,7 @@ symbol* get_id(char* id) {
 int load_inc_var(char* id) {
 	symbol* smb = get_id(id);
 	if (smb->type != INT_T) {
-		print_error(concat_many(3,"error: Invalid operator for type ",get_type_string(smb->type)," expect INT_T"));
+		print_error(concat_many(3, RED_ERROR ": Invalid operator for type ", get_type_string(smb->type), " expect INT_T"));
 		return ERROR_T;
 	}
 	write_code(concat_many(3, "iinc ", i_to_str(smb->lid), " 1"));
@@ -217,7 +217,7 @@ int load_inc_var(char* id) {
 int load_var_inc(char* id) {
 	symbol* smb = get_id(id);
 	if (smb->type != INT_T) {
-		print_error(concat_many(3,"error: Invalid operator for type ",get_type_string(smb->type)," expect INT_T"));
+		print_error(concat_many(4, RED_ERROR ": Invalid operator for type ", get_type_string(smb->type), " expect INT_T"));
 		return ERROR_T;
 	}
 	load_var(id);
