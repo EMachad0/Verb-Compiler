@@ -119,21 +119,21 @@ expr:   value                               { $$ = $1; }
     // |   expr '<' expr                       { }
     // |   expr '>' expr                       { }
     // |   expr BOOLOP expr                    { }
-    // |   expr '|' expr                       { }
-    // |   expr '^' expr                       { }
-    // |   expr '&' expr                       { }
+    |   expr '|' expr                       { $$ = arith($1, $3, "or"); }
+    |   expr '^' expr                       { $$ = arith($1, $3, "xor"); }
+    |   expr '&' expr                       { $$ = arith($1, $3, "and"); }
     // |   expr CMPOP expr                     { }
-    // |   expr BITSHIFTOP expr                { }
-    // |   expr '+' expr                       { }
-    // |   expr '-' expr                       { }
-    // |   expr '*' expr                       { }
-    // |   expr '/' expr                       { }
-    // |   expr '%' expr                       { }
-    // |   '-' expr %prec UNARYOP              { }
+    |   expr BITSHIFTOP expr                { $$ = arith($1, $3, ($2[0] == '<')? "shl":"shr"); }
+    |   expr '+' expr                       { $$ = arith($1, $3, "add"); }
+    |   expr '-' expr                       { $$ = arith($1, $3, "sub"); }
+    |   expr '*' expr                       { $$ = arith($1, $3, "mul"); }
+    |   expr '/' expr                       { $$ = arith($1, $3, "div"); }
+    |   expr '%' expr                       { $$ = arith($1, $3, "rem"); }
+    |   '-' expr %prec UNARYOP              { $$ = arith($2, $2, "neg"); }
     // |   '!' expr                            { }
     // |   '~' expr                            { }
     // |   expr EXPOP expr                     { }
-    // |   '(' expr ')'                        { }
+    |   '(' expr ')'                        { $$ = $2; }
     // |   '(' error ')'                       { }
     ;
 

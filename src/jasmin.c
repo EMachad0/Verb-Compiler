@@ -4,9 +4,7 @@
 #include "jasmin.h"
 #include "../vector/vector.h"
 #include "../hashmap/hashmap.h"
-#include "../hashmap/hashmap_symbol.h"
 #include "../utils/str_utils.h"
-#include "../output/verb.tab.h"
 
 int id_cont;
 hashmap* id_map;
@@ -115,6 +113,18 @@ void stdout_code(int type) {
 		write_code("swap");
 		write_code("invokevirtual java/io/PrintStream/println(F)V");	
 	}
+}
+
+int arith(int t1, int t2, char* opcode) {
+	if (t1 == STR_T || t2 == STR_T) {
+		print_error("Invalid operator for type string literal");
+		return ERROR_T;
+	}
+	if (t1 == t2) {
+		write_code(concat((t1 == INT_T)? "i":"f", opcode));
+		return t1;
+	}
+	print_error("Type cast not implemented"); // todo type cast
 }
 
 symbol* get_id(char* id) {
