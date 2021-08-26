@@ -112,6 +112,6 @@ void stdout_code(int type) {
 		write_code(concat("fstore ", i_to_str(get_symbol(id_map, "1syso_float_var")->value)));
 		write_code("getstatic      java/lang/System/out Ljava/io/PrintStream;");
 		write_code(concat("fload ", i_to_str(get_symbol(id_map, "1syso_float_var")->value)));
-		write_code("invokevirtual java/io/PrintStream/println(I)V");	
+		write_code("invokevirtual java/io/PrintStream/println(F)V");	
 	}
 }
