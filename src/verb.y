@@ -8,6 +8,9 @@
 #include "../vector/vector.h"
 #include "../utils/str_utils.h"
 
+#define RED "\033[1;31m"
+#define RESET "\x1B[0m"
+
 extern FILE* yyin;
 
 bool found_error = false;
@@ -242,7 +245,7 @@ static int yyreport_syntax_error(const yypcontext_t* ctx, user_context* uctx) {
     int res = 0;
     const YYLTYPE* loc = yypcontext_location(ctx);
     location_print(stderr, loc);
-    fprintf(stderr, ": syntax error");
+    fprintf(stderr, ":" RED " syntax error " RESET);
     {   // Report the tokens expected at this point.
         enum { TOKENMAX = 5 };
         yysymbol_kind_t expected[TOKENMAX];

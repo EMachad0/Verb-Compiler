@@ -3,6 +3,9 @@
 #include "../output/verb.tab.h"
 
 extern void write_line(int n);
+
+#define RED "\033[1;31m"
+#define RESET "\x1B[0m"
 %}
 
 /* single character ops */
@@ -156,8 +159,8 @@ BLOCK_COMMENT   \/\*[^*]*\*\/
     
 .               {   yylloc->first_column = ++yylloc->last_column;
                     strcat(uctx->line, yytext);
-                    char error[] = "lexical error, unexpected '%c'";
-                    sprintf(error, error, yytext[0]);
+                    char error[100];
+                    sprintf(error, RED "lexical error " RESET " unexpected '%c' ", yytext[0]);
                     yyerror(yylloc, uctx, error);
                     return YYerror;
                 }
