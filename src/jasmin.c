@@ -67,7 +67,7 @@ void print_error(char* msg) {
 	yyerror(loc, uctx, msg);
 }
 
-bool check_id(char* id) {
+bool check_id(const char* id) {
 	return hashmap_has(id_map, id);
 }
 
@@ -102,12 +102,21 @@ void write_load(int type, int lid) {
 }
 
 void assign_var(char* id, int type) {
+	if (!check_id(id)) {
+		print_error(concat_many(3, "error: variable ", id, " not declared"));
+		return;
+	}
 	symbol* smb = get_symbol(id_map, id);
 	if (smb->type != type) cast(type, smb->type);
 	write_store(smb->type, smb->lid);
 }
 
 int load_var(char* id) {
+	if (!check_id(id)) {
+		print_error(concat_many(3, "error: variable ", id, " not declared"));
+		write_const(INT_T);
+		return INT_T;
+	}
 	symbol* smb = get_symbol(id_map, id);
 	write_load(smb->type, smb->lid);
 	return smb->type;
@@ -116,6 +125,10 @@ int load_var(char* id) {
 void define_vars(int type, vector *vec) {
 	for (int i = 0; i < vector_size(vec); i++) {
 		symbol* smb = vector_get(vec, i);
+		if (check_id(smb->id)) {
+			print_error(concat_many(3, "error: variable ", smb->id, " already declared"));
+			continue;
+		}
 		if (smb->type != -1) {
 			if (smb->type != type) cast(smb->type, type);
 		} else write_const(type);

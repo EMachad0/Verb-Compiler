@@ -16,7 +16,7 @@ void print_error(char*);
 void generate_footer();
 void generate_header();
 void write_code(char *s);
-bool check_id(char* id);
+bool check_id(const char* id);
 void define_var(char* id, int type);
 void assign_var(char* id, int type);
 void define_vars(int type, vector *vec);

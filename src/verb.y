@@ -245,12 +245,14 @@ static void error_line_print(FILE *out, const YYLTYPE* loc, const user_context* 
 }
 
 void yyerror (const YYLTYPE* loc, const user_context* uctx, const char *s) {
+    found_error = true;
     location_print(stderr, loc);
     fprintf (stderr, ": %s\n", s);
     error_line_print(stderr, loc, uctx);
 }
 
 static int yyreport_syntax_error(const yypcontext_t* ctx, user_context* uctx) {
+    found_error = true;
     if (uctx->silent) return 0;
     int res = 0;
     const YYLTYPE* loc = yypcontext_location(ctx);
@@ -311,5 +313,5 @@ int main(int argc, const char **argv) {
     free_uctx(uctx);
     jasmin_delete();
 
-	return 0;
+	return found_error;
 }
