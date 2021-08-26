@@ -48,7 +48,7 @@ void vector_pushback(vector* vector, void *value){
 
 void *vector_get(vector* vector, int i){
     if (i >= vector->size) {
-        fprintf(stderr, "NullPointerException\n");
+        fprintf(stderr, "404 Not Found\n");
         return 0;
     } 
     return vector->buffer[i];
@@ -56,10 +56,26 @@ void *vector_get(vector* vector, int i){
 
 char *vector_get_char(vector *vector, int i) {
     if (i >= vector->size) {
-        fprintf(stderr, "NullPointerException\n");
+        fprintf(stderr, "404 Not Found\n");
         return "erro";
     }
     return (char *) vector_get(vector, i);
+}
+
+void vector_set(vector *vector, int i, void *value) {
+    if (i >= vector->size) {
+        fprintf(stderr, "404 Not Found\n");
+        return;
+    }
+    vector->buffer[i] = value;
+}
+
+void vector_set_char(vector *vector, int i, char *s) {
+    vector_set(vector, i, s);
+}
+
+void vector_set_ll(vector *vector, int i, long long v){
+    vector_set(vector, i, (void *) v);
 }
 
 long long vector_get_ll(vector *vector, int i) {

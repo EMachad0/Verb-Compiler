@@ -8,6 +8,14 @@ int main(){
     for (int i=0; i < 100; i++) {
         vector_pushback_ll(v_int, i);
     }
+    
+    for (int i=0; i < 100; i++) {
+        printf("%lli\n", vector_get_ll(v_int, i));
+    }
+
+    for (int i=100; i > 0; i--) {
+        vector_set_ll(v_int, i, vector_get_ll(v_int, i) - i);
+    }
 
     for (int i=0; i < 100; i++) {
         printf("%lli\n", vector_get_ll(v_int, i));
@@ -30,6 +38,7 @@ int main(){
     vector_pushback_char(v_char, "lsdf");
     vector_pushback_char(v_char, "msdf");
 
+
     printf("%s\n", (char *) vector_get_char(v_char, 0));
     printf("%s\n", (char *) vector_get_char(v_char, 1));
     printf("%s\n", (char *) vector_get_char(v_char, 2));
@@ -40,6 +49,23 @@ int main(){
     printf("%s\n", (char *) vector_get_char(v_char, 7));
     printf("%s\n", (char *) vector_get_char(v_char, 8));
     printf("%s\n", (char *) vector_get_char(v_char, 9));
+
+
+    for (int i=0; i < vector_size(v_char); i++) {
+        vector_set_char(v_char, i, "a");
+    }
+
+    printf("%s\n", (char *) vector_get_char(v_char, 0));
+    printf("%s\n", (char *) vector_get_char(v_char, 1));
+    printf("%s\n", (char *) vector_get_char(v_char, 2));
+    printf("%s\n", (char *) vector_get_char(v_char, 3));
+    printf("%s\n", (char *) vector_get_char(v_char, 4));
+    printf("%s\n", (char *) vector_get_char(v_char, 5));
+    printf("%s\n", (char *) vector_get_char(v_char, 6));
+    printf("%s\n", (char *) vector_get_char(v_char, 7));
+    printf("%s\n", (char *) vector_get_char(v_char, 8));
+    printf("%s\n", (char *) vector_get_char(v_char, 9));
+
 
     free(v_char);
 
