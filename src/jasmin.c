@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "jasmin.h"
-#include "../vector/vector.h"
-#include "../hashmap/hashmap.h"
 #include "../utils/str_utils.h"
 
 int id_cont;
@@ -69,45 +67,74 @@ void print_error(char* msg) {
 	yyerror(loc, uctx, msg);
 }
 
-bool check_id(char* id) {
+bool check_id(const char* id) {
 	return hashmap_has(id_map, id);
 }
 
-void define_var(char* id, int type) {
+void write_const(int type) {
 	if (type == INT_T) {
 		write_code("iconst_0");
-		write_code(concat("istore ", i_to_str(id_cont)));
 	} else if (type == FLOAT_T) {
 		write_code("fconst_0");
-		write_code(concat("fstore ", i_to_str(id_cont)));
 	} else if (type == STR_T) {
 		write_code("aconst_null");
-		write_code(concat("astore ", i_to_str(id_cont)));
 	}
-	set_symbol(id_map, id, id_cont++, type);
 }
 
-void assign_var(char* id) {
-	symbol* smb = get_symbol(id_map, id);
-	if (smb->type == INT_T) {
-		write_code(concat("istore ", i_to_str(smb->value)));
-	} else if (smb->type == FLOAT_T) {
-		write_code(concat("fstore ", i_to_str(smb->value)));
-	} else if (smb->type == STR_T) {
-		write_code(concat("astore ", i_to_str(smb->value)));
+void write_store(int type, int lid) {
+	if (type == INT_T) {
+		write_code(concat("istore ", i_to_str(lid)));
+	} else if (type == FLOAT_T) {
+		write_code(concat("fstore ", i_to_str(lid)));
+	} else if (type == STR_T) {
+		write_code(concat("astore ", i_to_str(lid)));
 	}
+}
+
+void write_load(int type, int lid) {
+	if (type == INT_T) {
+		write_code(concat("iload ", i_to_str(lid)));
+	} else if (type == FLOAT_T) {
+		write_code(concat("fload ", i_to_str(lid)));
+	} else if (type == STR_T) {
+		write_code(concat("aload ", i_to_str(lid)));
+	}
+}
+
+void assign_var(char* id, int type) {
+	if (!check_id(id)) {
+		print_error(concat_many(3, "error: variable ", id, " not declared"));
+		return;
+	}
+	symbol* smb = get_symbol(id_map, id);
+	if (smb->type != type) cast(type, smb->type);
+	write_store(smb->type, smb->lid);
 }
 
 int load_var(char* id) {
-	symbol* smb = get_symbol(id_map, id);
-	if (smb->type == INT_T) {
-		write_code(concat("iload ", i_to_str(smb->value)));
-	} else if (smb->type == FLOAT_T) {
-		write_code(concat("fload ", i_to_str(smb->value)));
-	} else if (smb->type == STR_T) {
-		write_code(concat("aload ", i_to_str(smb->value)));
+	if (!check_id(id)) {
+		print_error(concat_many(3, "error: variable ", id, " not declared"));
+		write_const(INT_T);
+		return INT_T;
 	}
+	symbol* smb = get_symbol(id_map, id);
+	write_load(smb->type, smb->lid);
 	return smb->type;
+}
+
+void define_vars(int type, vector *vec) {
+	for (int i = 0; i < vector_size(vec); i++) {
+		symbol* smb = vector_get(vec, i);
+		if (check_id(smb->id)) {
+			print_error(concat_many(3, "error: variable ", smb->id, " already declared"));
+			continue;
+		}
+		if (smb->type != -1) {
+			if (smb->type != type) cast(smb->type, type);
+		} else write_const(type);
+		write_store(type, id_cont);
+		set_symbol(id_map, smb->id, id_cont++, type);
+	}
 }
 
 void stdout_code(int type) {
@@ -140,7 +167,10 @@ int arith(int t1, int t2, char* opcode) {
 		write_code(concat((t1 == INT_T)? "i":"f", opcode));
 		return t1;
 	}
-	print_error("Type cast not implemented"); // todo type cast
+	if (t1 == FLOAT_T) cast(t2, t1);
+	else write_code("swap"), cast(t1, t2);
+	write_code(concat("f", opcode));
+	return FLOAT_T;
 }
 
 int int_arith(int t1, int t2, char* opcode) {
@@ -150,6 +180,15 @@ int int_arith(int t1, int t2, char* opcode) {
 	}
 	write_code(concat("i", opcode));
 	return INT_T;
+}
+
+void cast(int t1, int t2) {
+	if (t1 == t2) return;
+	if (t1 == STR_T || t2 == STR_T) {
+		print_error("Impossible to cast string");
+		return;
+	}
+	write_code(concat_many(3, t1 == INT_T? "i":"f", "2", t2 == INT_T? "i":"f"));
 }
 
 char* get_type_string(int type) {
@@ -162,4 +201,26 @@ char* get_type_string(int type) {
 
 symbol* get_id(char* id) {
 	return get_symbol(id_map, id);
+}
+
+int load_inc_var(char* id) {
+	symbol* smb = get_id(id);
+	if (smb->type != INT_T) {
+		print_error(concat_many(3,"error: Invalid operator for type ",get_type_string(smb->type)," expect INT_T"));
+		return ERROR_T;
+	}
+	write_code(concat_many(3, "iinc ", i_to_str(smb->lid), " 1"));
+	load_var(id);
+	return INT_T;
+}
+
+int load_var_inc(char* id) {
+	symbol* smb = get_id(id);
+	if (smb->type != INT_T) {
+		print_error(concat_many(3,"error: Invalid operator for type ",get_type_string(smb->type)," expect INT_T"));
+		return ERROR_T;
+	}
+	load_var(id);
+	write_code(concat_many(3, "iinc ", i_to_str(smb->lid), " 1"));
+	return INT_T;
 }
