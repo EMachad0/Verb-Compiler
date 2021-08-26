@@ -20,7 +20,7 @@ INTEIRO         [\+\-]?{DIGITO}+
 FLUTUANTE       {INTEIRO}\.{DIGITO}*|{INTEIRO}*\.{DIGITO}+
 
 /* text */
-CHARACTER       .
+CHARACTER       [^"]
 TEXTO           ["]{CHARACTER}*["]
 
 /* operadores */

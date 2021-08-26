@@ -21,5 +21,6 @@ int load_var(char* id);
 void stdout_code(int );
 int arith(int t1, int t2, char* opcode);
 symbol* get_id(char* id);
+void std_out_ln();
 
 #endif
