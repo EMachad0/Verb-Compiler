@@ -33,7 +33,7 @@ int write_code(char *s) {
 }
 
 void write_line(int n) {
-	write_code(concat(".line ", i_to_str(n))); /* TODO LINE GENERATION */
+	write_code(concat(".line ", i_to_str(n)));
 }
 
 void generate_header(char* source_file) {
