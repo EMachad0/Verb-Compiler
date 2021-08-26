@@ -18,5 +18,6 @@ void define_var(char* id, int type);
 void assign_var(char* id);
 int load_var(char* id);
 void stdout_code(int );
+symbol* get_id(char* id);
 
 #endif

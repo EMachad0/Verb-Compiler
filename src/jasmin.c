@@ -116,3 +116,7 @@ void stdout_code(int type) {
 		write_code("invokevirtual java/io/PrintStream/println(F)V");	
 	}
 }
+
+symbol* get_id(char* id) {
+	return get_symbol(id_map, id);
+}
