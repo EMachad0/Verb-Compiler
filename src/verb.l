@@ -156,8 +156,7 @@ BLOCK_COMMENT   \/\*[^*]*\*\/
     
 .               {   yylloc->first_column = ++yylloc->last_column;
                     strcat(uctx->line, yytext);
-                    // return YYUNDEF;
-                    char error[] = "Lexical Error, Unexpected '%c'";
+                    char error[] = "lexical error, unexpected '%c'";
                     sprintf(error, error, yytext[0]);
                     yyerror(yylloc, uctx, error);
                     return YYerror;
