@@ -41,9 +41,6 @@ void generate_header(char* source_file) {
 	write_code(".end method\n");
 	write_code(".method public static main([Ljava/lang/String;)V");
 	write_code(".limit locals 100\n.limit stack 100");
-	/* generate temporal vars for syso*/
-	define_var("1syso_int_var", INT_T);
-	define_var("1syso_float_var", FLOAT_T);
 	/*generate line*/
 	write_code("; code start");
 	write_line(1);
@@ -99,19 +96,12 @@ int load_var(char* id) {
 
 void stdout_code(int type) {
 	if (type == INT_T) {
-		/* expression is at top of stack now */
-		/* save it at the predefined temp syso var */
-		write_code(concat("istore ", i_to_str(get_symbol(id_map, "1syso_int_var")->value)));
-		/* call syso */	
-		write_code("getstatic      java/lang/System/out Ljava/io/PrintStream;");
-		/*insert param*/
-		write_code(concat("iload ", i_to_str(get_symbol(id_map, "1syso_int_var")->value)));
-		/*invoke syso*/
+		write_code("getstatic java/lang/System/out Ljava/io/PrintStream;");
+		write_code("swap");
 		write_code("invokevirtual java/io/PrintStream/println(I)V");
 	} else if (type == FLOAT_T) {
-		write_code(concat("fstore ", i_to_str(get_symbol(id_map, "1syso_float_var")->value)));
-		write_code("getstatic      java/lang/System/out Ljava/io/PrintStream;");
-		write_code(concat("fload ", i_to_str(get_symbol(id_map, "1syso_float_var")->value)));
+		write_code("getstatic java/lang/System/out Ljava/io/PrintStream;");
+		write_code("swap");
 		write_code("invokevirtual java/io/PrintStream/println(F)V");	
 	}
 }
