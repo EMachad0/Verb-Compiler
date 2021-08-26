@@ -2,6 +2,7 @@
 #define JASMIN_H
 
 #include "../output/verb.tab.h"
+#include "../hashmap/hashmap_symbol.h"
 
 typedef enum {INT_T, FLOAT_T, STR_T, ERROR_T} type_enum;
 
@@ -18,6 +19,7 @@ void define_var(char* id, int type);
 void assign_var(char* id);
 int load_var(char* id);
 void stdout_code(int );
+int arith(int t1, int t2, char* opcode);
 symbol* get_id(char* id);
 
 #endif

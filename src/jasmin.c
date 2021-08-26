@@ -4,9 +4,7 @@
 #include "jasmin.h"
 #include "../vector/vector.h"
 #include "../hashmap/hashmap.h"
-#include "../hashmap/hashmap_symbol.h"
 #include "../utils/str_utils.h"
-#include "../output/verb.tab.h"
 
 int id_cont;
 hashmap* id_map;
@@ -82,6 +80,9 @@ void define_var(char* id, int type) {
 	} else if (type == FLOAT_T) {
 		write_code("fconst_0");
 		write_code(concat("fstore ", i_to_str(id_cont)));
+	} else if (type == STR_T) {
+		write_code("aconst_null");
+		write_code(concat("astore ", i_to_str(id_cont)));
 	}
 	set_symbol(id_map, id, id_cont++, type);
 }
@@ -92,6 +93,8 @@ void assign_var(char* id) {
 		write_code(concat("istore ", i_to_str(smb->value)));
 	} else if (smb->type == FLOAT_T) {
 		write_code(concat("fstore ", i_to_str(smb->value)));
+	} else if (smb->type == STR_T) {
+		write_code(concat("astore ", i_to_str(smb->value)));
 	}
 }
 
@@ -101,6 +104,8 @@ int load_var(char* id) {
 		write_code(concat("iload ", i_to_str(smb->value)));
 	} else if (smb->type == FLOAT_T) {
 		write_code(concat("fload ", i_to_str(smb->value)));
+	} else if (smb->type == STR_T) {
+		write_code(concat("aload ", i_to_str(smb->value)));
 	}
 	return smb->type;
 }
@@ -113,8 +118,24 @@ void stdout_code(int type) {
 	} else if (type == FLOAT_T) {
 		write_code("getstatic java/lang/System/out Ljava/io/PrintStream;");
 		write_code("swap");
-		write_code("invokevirtual java/io/PrintStream/println(F)V");	
+		write_code("invokevirtual java/io/PrintStream/println(F)V");
+	} else if (type == STR_T) {
+		write_code("getstatic java/lang/System/out Ljava/io/PrintStream;");
+		write_code("swap");
+		write_code("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");	
 	}
+}
+
+int arith(int t1, int t2, char* opcode) {
+	if (t1 == STR_T || t2 == STR_T) {
+		print_error("Invalid operator for type string literal");
+		return ERROR_T;
+	}
+	if (t1 == t2) {
+		write_code(concat((t1 == INT_T)? "i":"f", opcode));
+		return t1;
+	}
+	print_error("Type cast not implemented"); // todo type cast
 }
 
 symbol* get_id(char* id) {
