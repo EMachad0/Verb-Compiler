@@ -22,7 +22,7 @@ void write_store(int type, int lid);
 void write_load(int type, int lid);
 void write_label(int n);
 void define_var(char* id, int type);
-void assign_var(char* id, int type);
+void assign_var(char* id, int type, char* op);
 void define_vars(int type, vector *vec);
 int load_var(char* id);
 int load_inc_var(char* id);

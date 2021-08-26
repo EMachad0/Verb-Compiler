@@ -155,8 +155,8 @@ decla_or_assign: ID                         { $$ = make_symbol($1, -1, -1); }
     |   ID '=' expr                         { $$ = make_symbol($1, -1, $3); }
     ;
 
-assignment: ID '=' expr                     { assign_var($1, $3); }
-    |   ID ATTOP expr                       { }
+assignment: ID '=' expr                     { assign_var($1, $3, "="); }
+    |   ID ATTOP expr                       { assign_var($1, $3, $2); }
     ;
 
 call:   ID                                  { $$ = load_var($1); }
