@@ -159,8 +159,8 @@ assignment: ID '=' expr                     { assign_var($1, $3); }
     ;
 
 call:   ID                                  { $$ = load_var($1); }
-    // |   ID UNARYOP                          { }
-    // |   UNARYOP ID                          { }
+    |   ID UNARYOP                          { $$ = load_var_inc($1); }
+    |   UNARYOP ID                          { $$ = load_inc_var($2); }
     // |   ID '(' ')'                          { }
     // |   ID '(' expr_list ')'                { }
     // |   ID '(' error ')'                    { }

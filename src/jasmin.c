@@ -202,3 +202,25 @@ char* get_type_string(int type) {
 symbol* get_id(char* id) {
 	return get_symbol(id_map, id);
 }
+
+int load_inc_var(char* id) {
+	symbol* smb = get_id(id);
+	if (smb->type != INT_T) {
+		print_error(concat_many(3,"error: Invalid operator for type ",get_type_string(smb->type)," expect INT_T"));
+		return ERROR_T;
+	}
+	write_code(concat_many(3, "iinc ", i_to_str(smb->lid), " 1"));
+	load_var(id);
+	return INT_T;
+}
+
+int load_var_inc(char* id) {
+	symbol* smb = get_id(id);
+	if (smb->type != INT_T) {
+		print_error(concat_many(3,"error: Invalid operator for type ",get_type_string(smb->type)," expect INT_T"));
+		return ERROR_T;
+	}
+	load_var(id);
+	write_code(concat_many(3, "iinc ", i_to_str(smb->lid), " 1"));
+	return INT_T;
+}

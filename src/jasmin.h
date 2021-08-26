@@ -21,6 +21,8 @@ void define_var(char* id, int type);
 void assign_var(char* id, int type);
 void define_vars(int type, vector *vec);
 int load_var(char* id);
+int load_inc_var(char* id);
+int load_var_inc(char* id);
 void stdout_code(int );
 int arith(int t1, int t2, char* opcode);
 int int_arith(int t1, int t2, char* opcode);
