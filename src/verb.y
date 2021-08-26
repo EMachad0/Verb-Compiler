@@ -139,8 +139,9 @@ expr:   value                               { $$ = $1; }
     // |   '!' expr                            { }
     // |   '~' expr                            { }
     // |   expr EXPOP expr                     { }
+    |   '(' type ')' expr                   { $$ = $2; cast($4, $2); }
     |   '(' expr ')'                        { $$ = $2; }
-    // |   '(' error ')'                       { }
+    |   '(' error ')'                       { }
     ;
 
 declaration:    type decla_or_assign_list   { define_vars($1, $2); }
