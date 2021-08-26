@@ -1,17 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
 #include "jasmin.h"
 #include "../utils/str_utils.h"
 
-int id_cont;
+int id_cont, label_cont;
 hashmap* id_map;
 vector* code_list;
 user_context* uctx;
 YYLTYPE* loc;
 
 void jasmin_init() {
-	id_cont = 1;
+	id_cont = label_cont = 1;
     id_map = hashmap_create(100005); 
     code_list = vector_create(); 
 }
@@ -101,6 +102,10 @@ void write_load(int type, int lid) {
 	}
 }
 
+void write_label(int n) {
+	write_code(concat_many(3, "L_", i_to_str(n), ":"));
+}
+
 void assign_var(char* id, int type) {
 	if (!check_id(id)) {
 		print_error(concat_many(3, RED_ERROR ": variable ", to_yellow(id), " not declared"));
@@ -179,6 +184,65 @@ int int_arith(int t1, int t2, char* opcode) {
 		return ERROR_T;
 	}
 	write_code(concat("i", opcode));
+	return INT_T;
+}
+
+int cmp_arith(int t1, int t2, char* op) {
+	if (t1 != t2) {
+		print_error(concat_many(4, RED_ERROR ": Invalid comparison of types ", to_yellow(get_type_string(t1)), " and ", to_yellow(get_type_string(t2))));
+		return ERROR_T;
+	} else if (t1 == INT_T) {
+		if (strcmp(op, "==") == 0) {
+			write_code(concat("if_icmpeq L_", i_to_str(label_cont++)));
+		} else if (strcmp(op, "!=") == 0) {
+			write_code(concat("if_icmpne L_", i_to_str(label_cont++)));
+		} else if (strcmp(op, "<") == 0) {
+			write_code(concat("if_icmplt L_", i_to_str(label_cont++)));
+		} else if (strcmp(op, "<=") == 0) {
+			write_code(concat("if_icmple L_", i_to_str(label_cont++)));
+		} else if (strcmp(op, ">") == 0) {
+			write_code(concat("if_icmpgt L_", i_to_str(label_cont++)));
+		} else if (strcmp(op, ">=") == 0) {
+			write_code(concat("if_icmpge L_", i_to_str(label_cont++)));
+		} else if (strcmp(op, "!") == 0) {
+			write_code(concat("ifeq L_", i_to_str(label_cont++)));
+		} else {
+			print_error(concat_many(6, RED_ERROR ": Invalid operator (", to_yellow(op), ") for types ", to_yellow(get_type_string(t1)), " and ", to_yellow(get_type_string(t1))));
+			return ERROR_T;
+		}
+	} else if (t1 == FLOAT_T) {
+		write_code("fcmpg");
+		if (strcmp(op, "==") == 0) {
+			write_code(concat("ifeq L_", i_to_str(label_cont++)));
+		} else if (strcmp(op, "!=") == 0) {
+			write_code(concat("ifne L_", i_to_str(label_cont++)));
+		} else if (strcmp(op, "<") == 0) {
+			write_code(concat("iflt L_", i_to_str(label_cont++)));
+		} else if (strcmp(op, "<=") == 0) {
+			write_code(concat("ifle L_", i_to_str(label_cont++)));
+		} else if (strcmp(op, ">") == 0) {
+			write_code(concat("ifgt L_", i_to_str(label_cont++)));
+		} else if (strcmp(op, ">=") == 0) {
+			write_code(concat("ifge L_", i_to_str(label_cont++)));
+		} else {
+			print_error(concat_many(6, RED_ERROR ": Invalid operator (", to_yellow(op), ") for types ", to_yellow(get_type_string(t1)), " and ", to_yellow(get_type_string(t1))));
+			return ERROR_T;
+		}
+	} else if (t1 == STR_T) {
+		if (strcmp(op, "==") == 0) {
+			write_code(concat("if_acmpeq L_", i_to_str(label_cont++)));
+		} else if (strcmp(op, "!=") == 0) {
+			write_code(concat("if_acmpne L_", i_to_str(label_cont++)));
+		} else {
+			print_error(concat_many(6, RED_ERROR ": Invalid operator (", to_yellow(op), ") for types ", to_yellow(get_type_string(t1)), " and ", to_yellow(get_type_string(t1))));
+			return ERROR_T;
+		}
+	}
+	write_code("iconst_0");
+	write_code(concat("goto L_", i_to_str(label_cont++)));
+	write_label(label_cont - 2);
+	write_code("iconst_1");
+	write_label(label_cont - 1);
 	return INT_T;
 }
 
