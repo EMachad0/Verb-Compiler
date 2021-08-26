@@ -211,6 +211,7 @@ for:    'F' '(' expr ')' optional_block else                                    
 //     ;
 
 print:  'P' '(' expr ')'             {   stdout_code($3);    }
+    ;
 
 %%
 
