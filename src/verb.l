@@ -5,8 +5,6 @@
 
 extern void write_line(int n);
 
-#define RED "\033[1;31m"
-#define RESET "\x1B[0m"
 %}
 
 /* single character ops */

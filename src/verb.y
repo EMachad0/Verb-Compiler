@@ -210,8 +210,8 @@ switch_body:    /* nothing */                           { }
     |   value ':' statement switch_body                 { }
     ;
 
-while:  'W' '(' expr ')' optional_block else            { }
-    |   'W' '(' error ')' optional_block else           { }
+while:  'W' label '(' expr ')' ifeq optional_block goto label    { backpatch($6, $9); backpatch($8, $2); }
+    |   'W' label '(' error ')' optional_block
     ;
 
 do:     'O' '{' block '}' while                         { }
@@ -228,7 +228,7 @@ for:    'F' '(' expr ')' optional_block else                                    
 //     ;
 
 print_list: expr                           { stdout_code($1); }
-    |   expr { stdout_code($1); } ',' print_list                
+    |   expr                               { stdout_code($1); } ',' print_list                
     ;
 
 print:  'P' '(' print_list ')'             { std_out_ln();    }

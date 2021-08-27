@@ -1,10 +1,10 @@
-I a = input();
-I cont = 0;
+I cont = 1;
 
-F (a) {
-    ?(a > 0) a--;
-    : a++;
-    cont++;
+W (cont < 10) {
+    P(cont);
+
+    ? (cont % 2 == 0) cont *= 2;
+    : cont += 1;
+
+    // cont += 1;
 }
-
-print(a);
