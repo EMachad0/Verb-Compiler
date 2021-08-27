@@ -7,8 +7,7 @@ c = float(arquivo_aberto.readline())
 # Fechamento do arquivo
 arquivo_aberto.close()
 */
-
-D a = 10, b = 4, c = 9;
+D a = R(D), b = R(D), c = R(D);
 
 P("a = ", a);
 P("b = ", b);

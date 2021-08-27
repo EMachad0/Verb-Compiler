@@ -36,27 +36,6 @@ void write_line(int n) {
 	write_code(concat(".line ", i_to_str(n)));
 }
 
-void generate_header(char* source_file) {
-	write_code(concat(".source ", source_file));
-	write_code(".class public output/Verb\n.super java/lang/Object\n"); //code for defining class
-	write_code(".method public <init>()V");
-	write_code("\taload_0");
-	write_code("\tinvokenonvirtual java/lang/Object/<init>()V");
-	write_code("\treturn");
-	write_code(".end method\n");
-	write_code(".method public static main([Ljava/lang/String;)V");
-	write_code(".limit locals 100\n.limit stack 100");
-	/*generate line*/
-	write_code("; code start");
-	write_line(1);
-}
-
-void generate_footer() {
-	write_code("; code end");
-	write_code("return");
-	write_code(".end method");
-}
-
 void print_code(void) {
     FILE* f = fopen("output/verb.j", "w");
     for (int i = 0; i < vector_size(code_list); i++) {
@@ -162,23 +141,16 @@ void define_vars(int type, vector *vec) {
 
 void stdout_code(int type) {
 	if (type == INT_T) {
-		write_code("getstatic java/lang/System/out Ljava/io/PrintStream;");
-		write_code("swap");
-		write_code("invokevirtual java/io/PrintStream/print(I)V");
+		write_code("invokestatic output/Verb/output_int(I)V");
 	} else if (type == FLOAT_T) {
-		write_code("getstatic java/lang/System/out Ljava/io/PrintStream;");
-		write_code("swap");
-		write_code("invokevirtual java/io/PrintStream/print(F)V");
+		write_code("invokestatic output/Verb/output_float(F)V");
 	} else if (type == STR_T) {
-		write_code("getstatic java/lang/System/out Ljava/io/PrintStream;");
-		write_code("swap");
-		write_code("invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V");	
+		write_code("invokestatic output/Verb/output_str(Ljava/lang/String;)V");
 	}
 }
 
 void std_out_ln() {
-	write_code("getstatic java/lang/System/out Ljava/io/PrintStream;");
-	write_code("invokevirtual java/io/PrintStream/println()V");
+	write_code("invokestatic output/Verb/outputln()V");
 }
 
 int arith(int t1, int t2, char* opcode) {
@@ -324,4 +296,165 @@ void backpatch_many(vector *vec, int l_idx) {
 		vector_set_char(code_list, pos, concat(ori, idx_s));
 	}
 	free(idx_s);
+}
+
+void input_var(int type) {
+	if (type == INT_T) {
+		write_code("invokestatic output/Verb/input_int()I");
+	} else if (type == FLOAT_T) {
+		write_code("invokestatic output/Verb/input_float()F");
+	} else if (type == STR_T) {
+		print_error("String nput not implemented");
+	}
+}
+
+void generate_footer() {
+	write_code("; code end");
+	write_code("return");
+	write_code(".end method");
+}
+
+void generate_header(char* source_file) {
+	write_code(concat(".source ", source_file));
+	write_code(".class public output/Verb\n.super java/lang/Object\n"); //code for defining class
+	write_code(".method public <init>()V");
+	write_code("	aload_0");
+	write_code("	invokenonvirtual java/lang/Object/<init>()V");
+	write_code("	return");
+	write_code(".end method\n");
+	write_code(".method public static input_int()I");
+	write_code("	.limit locals 10");
+	write_code("	.limit stack 10");
+	write_code("	ldc 0");
+	write_code("	istore 1");
+	write_code("Label1:");
+	write_code("	getstatic java/lang/System/in Ljava/io/InputStream;");
+	write_code("	invokevirtual java/io/InputStream/read()I");
+	write_code("	istore 2");
+	write_code("	iload 2");
+	write_code("	ldc 10");
+	write_code("	isub");
+	write_code("	ifeq Label2");
+	write_code("	iload 2");
+	write_code("	ldc 32");
+	write_code("	isub");
+	write_code("	ifeq Label2");
+	write_code("	iload 2");
+	write_code("	ldc 48");
+	write_code("	isub");
+	write_code("	ldc 10");
+	write_code("	iload 1");
+	write_code("	imul");
+	write_code("	iadd");
+	write_code("	istore 1");
+	write_code("	goto Label1");
+	write_code("Label2:");
+	write_code("	iload 1");
+	write_code("	ireturn");
+	write_code(".end method\n");
+	write_code(".method public static input_float()F");
+	write_code("	.limit locals 10");
+	write_code("	.limit stack 10");
+	write_code("	ldc 0.0");
+	write_code("	fstore 1");
+	write_code("	ldc 0");
+	write_code("	istore 3");
+	write_code("Label1:");
+	write_code("	getstatic java/lang/System/in Ljava/io/InputStream;");
+	write_code("	invokevirtual java/io/InputStream/read()I");
+	write_code("	istore 2");
+	write_code("	iload 2");
+	write_code("	ldc 10");
+	write_code("	isub");
+	write_code("	ifeq Label3");
+	write_code("	iload 2");
+	write_code("	ldc 32");
+	write_code("	isub");
+	write_code("	ifeq Label3");
+	write_code("	iload 2");
+	write_code("	ldc 46");
+	write_code("	isub");
+	write_code("	ifeq Label2");
+	write_code("	iload 2");
+	write_code("	ldc 48");
+	write_code("	isub");
+	write_code("	i2f");
+	write_code("	ldc 10.0");
+	write_code("	fload 1");
+	write_code("	fmul");
+	write_code("	fadd");
+	write_code("	fstore 1");
+	write_code("	goto Label1");
+	write_code("Label2:");
+	write_code("	getstatic java/lang/System/in Ljava/io/InputStream;");
+	write_code("	invokevirtual java/io/InputStream/read()I");
+	write_code("	istore 2");
+	write_code("	iload 2");
+	write_code("	ldc 10");
+	write_code("	isub");
+	write_code("	ifeq Label3");
+	write_code("	iload 2");
+	write_code("	ldc 32");
+	write_code("	isub");
+	write_code("	ifeq Label3");
+	write_code("	iload 2");
+	write_code("	ldc 48");
+	write_code("	isub");
+	write_code("	i2f");
+	write_code("	ldc 10.0");
+	write_code("	fload 1");
+	write_code("	fmul");
+	write_code("	fadd");
+	write_code("	fstore 1");
+	write_code("	iinc 3 1");
+	write_code("	goto Label2");
+	write_code("Label3:");
+	write_code("	iload 3");
+	write_code("	ifeq Label4");
+	write_code("	fload 1");
+	write_code("	ldc 10.0");
+	write_code("	fdiv");
+	write_code("	fstore 1");
+	write_code("	iinc 3 -1");
+	write_code("	goto Label3");
+	write_code("Label4:");
+	write_code("	fload 1");
+	write_code("	freturn");
+	write_code(".end method\n");
+	write_code(".method public static output_int(I)V");
+	write_code("	.limit locals 5");
+	write_code("	.limit stack 5");
+	write_code("	getstatic java/lang/System/out Ljava/io/PrintStream;");
+	write_code("	iload 0  ; the argument to function");
+	write_code("	invokevirtual java/io/PrintStream/print(I)V");
+	write_code("	return");
+	write_code(".end method\n");
+	write_code(".method public static output_float(F)V");
+	write_code("	.limit locals 5");
+	write_code("	.limit stack 5");
+	write_code("	getstatic java/lang/System/out Ljava/io/PrintStream;");
+	write_code("	fload 0  ; the argument to function");
+	write_code("	invokevirtual java/io/PrintStream/print(F)V");
+	write_code("	return");
+	write_code(".end method\n");
+	write_code(".method public static output_str(Ljava/lang/String;)V");
+	write_code("	.limit locals 5");
+	write_code("	.limit stack 5");
+	write_code("	getstatic java/lang/System/out Ljava/io/PrintStream;");
+	write_code("	aload 0");
+	write_code("	invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V");
+	write_code("	return");
+	write_code(".end method\n");
+	write_code(".method public static outputln()V");
+	write_code("	.limit locals 5");
+	write_code("	.limit stack 5");
+	write_code("	getstatic java/lang/System/out Ljava/io/PrintStream;");
+	write_code("	invokevirtual java/io/PrintStream/println()V");
+	write_code("	return");
+	write_code(".end method\n");
+	write_code(".method public static main([Ljava/lang/String;)V");
+	write_code(".limit locals 100\n.limit stack 100");
+	/*generate line*/
+	write_code("; code start");
+	write_line(1);
 }

@@ -37,5 +37,6 @@ void std_out_ln();
 void cast(int t1, int t2);
 void backpatch(int pos, int l_idx);
 void backpatch_many(vector *vec, int l_idx);
+void input_var(int type);
 
 #endif
