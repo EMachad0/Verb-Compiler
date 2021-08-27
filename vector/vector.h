@@ -22,6 +22,7 @@ long long vector_get_ll(vector *, int );
 
 void *vector_pop(vector*);
 
-int vector_size(vector*);
+int vector_size(vector *);
+int vector_empty(vector *);
 
 #endif

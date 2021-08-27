@@ -89,3 +89,7 @@ void *vector_pop(vector* vector){
 int vector_size(vector* vector){
     return vector->size;
 }
+
+int vector_empty(vector *vector) {
+    return (vector->size == 0 ? 1 : 0);
+}
