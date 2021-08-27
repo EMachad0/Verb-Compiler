@@ -136,7 +136,7 @@ expr:   value                               { $$ = $1; }
     |   '!' expr                            { $$ = cmp_arith($2, INT_T, "!"); }
     // |   '~' expr                            { }
     // |   expr EXPOP expr                     { }
-    |   '(' type ')' expr                   { $$ = $2; cast($4, $2); }
+    |   '(' type expr ')'                   { $$ = $2; cast($3, $2); }
     |   '(' expr ')'                        { $$ = $2; }
     |   '(' error ')'                       { }
     ;
