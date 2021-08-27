@@ -100,7 +100,7 @@ block:  /* nothing */
 
 statement:  declaration ';'
     |   assignment ';'
-    |   expr ';'
+    |   expr ';'                            { write_code("pop"); }
     |   error ';'
     |   print ';'
     ;
