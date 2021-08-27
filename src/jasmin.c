@@ -29,7 +29,7 @@ void loc_uctx_init(YYLTYPE* _loc, user_context* _uctx) {
 
 int write_code(char *s) {
 	vector_pushback_char(code_list, s);
-	return vector_size(code_list);
+	return vector_size(code_list) - 1;
 }
 
 void write_line(int n) {
@@ -104,8 +104,8 @@ void write_load(int type, int lid) {
 }
 
 int write_label() {
-	write_code(concat_many(3, "L_", i_to_str(label_cont++), ":"));
-	return label_cont;
+	write_code(concat_many(3, "L_", i_to_str(label_cont), ":"));
+	return label_cont++;
 }
 
 void assign_var(char* id, int type, char* op) {
@@ -211,19 +211,19 @@ int cmp_arith(int t1, int t2, char* op) {
 		return ERROR_T;
 	} else if (t1 == INT_T) {
 		if (strcmp(op, "==") == 0) {
-			write_code(concat("if_icmpeq L_", i_to_str(label_cont++)));
+			write_code(concat("if_icmpeq L_", i_to_str(label_cont)));
 		} else if (strcmp(op, "!=") == 0) {
-			write_code(concat("if_icmpne L_", i_to_str(label_cont++)));
+			write_code(concat("if_icmpne L_", i_to_str(label_cont)));
 		} else if (strcmp(op, "<") == 0) {
-			write_code(concat("if_icmplt L_", i_to_str(label_cont++)));
+			write_code(concat("if_icmplt L_", i_to_str(label_cont)));
 		} else if (strcmp(op, "<=") == 0) {
-			write_code(concat("if_icmple L_", i_to_str(label_cont++)));
+			write_code(concat("if_icmple L_", i_to_str(label_cont)));
 		} else if (strcmp(op, ">") == 0) {
-			write_code(concat("if_icmpgt L_", i_to_str(label_cont++)));
+			write_code(concat("if_icmpgt L_", i_to_str(label_cont)));
 		} else if (strcmp(op, ">=") == 0) {
-			write_code(concat("if_icmpge L_", i_to_str(label_cont++)));
+			write_code(concat("if_icmpge L_", i_to_str(label_cont)));
 		} else if (strcmp(op, "!") == 0) {
-			write_code(concat("ifeq L_", i_to_str(label_cont++)));
+			write_code(concat("ifeq L_", i_to_str(label_cont)));
 		} else {
 			print_error(concat_many(6, RED_ERROR ": Invalid operator (", to_yellow(op), ") for types ", to_yellow(get_type_string(t1)), " and ", to_yellow(get_type_string(t1))));
 			return ERROR_T;
@@ -231,36 +231,36 @@ int cmp_arith(int t1, int t2, char* op) {
 	} else if (t1 == FLOAT_T) {
 		write_code("fcmpg");
 		if (strcmp(op, "==") == 0) {
-			write_code(concat("ifeq L_", i_to_str(label_cont++)));
+			write_code(concat("ifeq L_", i_to_str(label_cont)));
 		} else if (strcmp(op, "!=") == 0) {
-			write_code(concat("ifne L_", i_to_str(label_cont++)));
+			write_code(concat("ifne L_", i_to_str(label_cont)));
 		} else if (strcmp(op, "<") == 0) {
-			write_code(concat("iflt L_", i_to_str(label_cont++)));
+			write_code(concat("iflt L_", i_to_str(label_cont)));
 		} else if (strcmp(op, "<=") == 0) {
-			write_code(concat("ifle L_", i_to_str(label_cont++)));
+			write_code(concat("ifle L_", i_to_str(label_cont)));
 		} else if (strcmp(op, ">") == 0) {
-			write_code(concat("ifgt L_", i_to_str(label_cont++)));
+			write_code(concat("ifgt L_", i_to_str(label_cont)));
 		} else if (strcmp(op, ">=") == 0) {
-			write_code(concat("ifge L_", i_to_str(label_cont++)));
+			write_code(concat("ifge L_", i_to_str(label_cont)));
 		} else {
 			print_error(concat_many(6, RED_ERROR ": Invalid operator (", to_yellow(op), ") for types ", to_yellow(get_type_string(t1)), " and ", to_yellow(get_type_string(t1))));
 			return ERROR_T;
 		}
 	} else if (t1 == STR_T) {
 		if (strcmp(op, "==") == 0) {
-			write_code(concat("if_acmpeq L_", i_to_str(label_cont++)));
+			write_code(concat("if_acmpeq L_", i_to_str(label_cont)));
 		} else if (strcmp(op, "!=") == 0) {
-			write_code(concat("if_acmpne L_", i_to_str(label_cont++)));
+			write_code(concat("if_acmpne L_", i_to_str(label_cont)));
 		} else {
 			print_error(concat_many(6, RED_ERROR ": Invalid operator (", to_yellow(op), ") for types ", to_yellow(get_type_string(t1)), " and ", to_yellow(get_type_string(t1))));
 			return ERROR_T;
 		}
 	}
 	write_code("iconst_0");
-	write_code(concat("goto L_", i_to_str(label_cont++)));
-	write_label(label_cont - 2);
+	write_code(concat("goto L_", i_to_str(label_cont + 1)));
+	write_label();
 	write_code("iconst_1");
-	write_label(label_cont - 1);
+	write_label();
 	return INT_T;
 }
 
@@ -305,4 +305,23 @@ int load_var_inc(char* id) {
 	load_var(id);
 	write_code(concat_many(3, "iinc ", i_to_str(smb->lid), " 1"));
 	return INT_T;
+}
+
+void backpatch(int pos, int l_idx) {
+	char* idx_s = i_to_str(l_idx);
+	char* ori = vector_get_char(code_list, pos);
+	vector_set_char(code_list, pos, concat(ori, idx_s));
+	free(idx_s);
+}
+
+void backpatch_many(vector *vec, int l_idx) {
+	if (vector_size(vec) == 0) return;
+	char* idx_s = i_to_str(l_idx);
+	int idx_sz = strlen(idx_s);
+	for(int i = 0; i < vector_size(vec); i++) {
+		int pos = vector_get_ll(vec, i);
+		char* ori = vector_get_char(code_list, pos);
+		vector_set_char(code_list, pos, concat(ori, idx_s));
+	}
+	free(idx_s);
 }

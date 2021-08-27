@@ -20,6 +20,9 @@ const char* source_file = "";
         int silent;
         char *line;
     } user_context;
+    typedef struct {
+		struct vector *go_in, *go_out, *go_next;
+	} flow_t;
 }
 
 %code provides {
@@ -45,9 +48,7 @@ const char* source_file = "";
     char *sval;
     int ival;
     double fval;
-	struct {
-		struct vector *go_in, *go_out, *go_next;
-	} flow_val;
+	struct flow_t* flow_val;
     struct vector* vec_val;
     struct symbol* symb_val;
 }
@@ -76,7 +77,7 @@ const char* source_file = "";
 %type <ival> INTEGER
 %type <fval> FLOAT
 %type <sval> ATTOP BOOLOP CMPOP BITSHIFTOP UNARYOP EXPOP
-%nterm <ival> expr type value call label goto
+%nterm <ival> expr type value call label goto ifeq
 %nterm <symb_val> decla_or_assign
 %nterm <vec_val> decla_or_assign_list
 
@@ -183,7 +184,8 @@ flux:   if                                  { }
     |   for                                 { }
     ;
 
-if:     '?' '(' expr ')' optional_block elseif else     { }
+if:     '?' '(' expr ')' ifeq optional_block goto label
+        elseif else label { backpatch($5, $8); backpatch($7, $11); }
     |   '?' '(' error ')' optional_block elseif else    { }
     ;
 
@@ -231,7 +233,10 @@ print:  'P' '(' print_list ')'             { std_out_ln();    }
 label:  /* nothing */   { $$ = write_label(); }
     ;
 
-goto:  /* nothing */   { $$ = write_code("goto "); }
+goto:  /* nothing */   { $$ = write_code("goto L_"); }
+    ;
+
+ifeq:  /* nothing */   { $$ = write_code("ifeq L_"); }
     ;
 
 %%
@@ -293,6 +298,21 @@ user_context* init_uctx() {
 void free_uctx(user_context* uctx) {
     free(uctx->line);
     free(uctx);
+}
+
+flow_t* flow_create() {
+    flow_t* flow = malloc(sizeof(flow_t));
+    flow->go_in = vector_create();
+    flow->go_out = vector_create();
+    flow->go_next = vector_create();
+    return flow;
+}
+
+void flow_delete(flow_t* flow) {
+    vector_delete(flow->go_in);
+    vector_delete(flow->go_out);
+    vector_delete(flow->go_next);
+    free(flow);
 }
 
 int main(int argc, const char **argv) {

@@ -20,7 +20,7 @@ bool check_id(const char* id);
 void write_const(int type);
 void write_store(int type, int lid);
 void write_load(int type, int lid);
-void write_label();
+int write_label();
 void define_var(char* id, int type);
 void assign_var(char* id, int type, char* op);
 void define_vars(int type, vector *vec);
@@ -35,5 +35,7 @@ symbol* get_id(char* id);
 char* get_type_string(int type);
 void std_out_ln();
 void cast(int t1, int t2);
+void backpatch(int pos, int l_idx);
+void backpatch_many(vector *vec, int l_idx);
 
 #endif
