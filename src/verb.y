@@ -141,7 +141,7 @@ expr:   value                               { $$ = $1; }
     // |   expr EXPOP expr                     { }
     |   '(' type expr ')'                   { $$ = $2; cast($3, $2); }
     |   '(' expr ')'                        { $$ = $2; }
-    |   '(' error ')'
+    |   '(' error ')'                       { $$ = ERROR_T; }
     ;
 
 declaration:    type decla_or_assign_list   { define_vars($1, $2); }
@@ -171,9 +171,9 @@ call:   ID                                  { $$ = load_var($1); }
 //     |   expr ',' expr_list
 //     ;
 
-declaration_list:   type ID
-    |   type ID ',' declaration_list
-    ;
+// declaration_list:   type ID
+//     |   type ID ',' declaration_list
+//     ;
 
 assignment_list:    assignment
     |   assignment ',' assignment_list
