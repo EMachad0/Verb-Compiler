@@ -88,27 +88,26 @@ const char* source_file = "";
 
 %%
 
-program:                                { loc_uctx_init(&@$, uctx); generate_header(source_file); } 
-        block
-                                        { generate_footer(); }
+program:    { loc_uctx_init(&@$, uctx); generate_header(source_file); } 
+    block   { generate_footer(); }
     ;
 
-block:  /* nothing */                       { }
-    |   statement block                     { }
-    |   flux block                          { }
-    // |   function block                      { }
+block:  /* nothing */
+    |   statement block
+    |   flux block
+    // |   function block
     ;
 
-statement:  declaration ';'                 { }
-    |   assignment ';'                      { }
-    |   expr ';'                            { }
-    |   error ';'                           { }
-    |   print ';'                           { }
+statement:  declaration ';'
+    |   assignment ';'
+    |   expr ';'
+    |   error ';'
+    |   print ';'
     ;
 
-optional_block: statement                   { }
-    |   '{' block '}'                       { }
-    |   '{' error '}'                       { }
+optional_block: statement
+    |   '{' block '}'
+    |   '{' error '}'
     ;
 
 type:   'I'                                 { $$ = INT_T; }
@@ -142,7 +141,7 @@ expr:   value                               { $$ = $1; }
     // |   expr EXPOP expr                     { }
     |   '(' type expr ')'                   { $$ = $2; cast($3, $2); }
     |   '(' expr ')'                        { $$ = $2; }
-    |   '(' error ')'                       { }
+    |   '(' error ')'
     ;
 
 declaration:    type decla_or_assign_list   { define_vars($1, $2); }
@@ -163,28 +162,28 @@ assignment: ID '=' expr                     { assign_var($1, $3, "="); }
 call:   ID                                  { $$ = load_var($1); }
     |   ID UNARYOP                          { $$ = load_var_inc($1); }
     |   UNARYOP ID                          { $$ = load_inc_var($2); }
-    // |   ID '(' ')'                          { }
-    // |   ID '(' expr_list ')'                { }
-    // |   ID '(' error ')'                    { }
+    // |   ID '(' ')'
+    // |   ID '(' expr_list ')'
+    // |   ID '(' error ')'
     ;
 
-// expr_list:  expr                            { }
-//     |   expr ',' expr_list                  { }
+// expr_list:  expr
+//     |   expr ',' expr_list
 //     ;
 
-declaration_list:   type ID                 { }
-    |   type ID ',' declaration_list        { }
+declaration_list:   type ID
+    |   type ID ',' declaration_list
     ;
 
-assignment_list:    assignment              { }
-    |   assignment ',' assignment_list      { }
+assignment_list:    assignment
+    |   assignment ',' assignment_list
     ;
 
-flux:   if                                  { }
-    |   switch                              { }
-    |   while                               { }
-    |   do                                  { }
-    |   for                                 { }
+flux:   if
+    |   switch
+    |   while
+    |   do
+    |   for
     ;
 
 if:     '?' '(' expr ')' ifeq optional_block goto label elseif else label 
@@ -202,19 +201,19 @@ else:   /* nothing */
     |   ':' optional_block
     ;
 
-switch: '#' '{' switch_body '}'                         { }
-    |   '#' '{' error '}'                               { }
+switch: '#' '{' switch_body '}'
+    |   '#' '{' error '}'
     ;
 
-switch_body:    /* nothing */                           { }
-    |   value ':' statement switch_body                 { }
+switch_body:    /* nothing */
+    |   value ':' statement switch_body
     ;
 
 while:  'W' label '(' expr ')' ifeq optional_block goto label    { backpatch($6, $9); backpatch($8, $2); }
     |   'W' label '(' error ')' optional_block
     ;
 
-do:     'O' '{' block '}' while                         { }
+do:     'O' '{' block '}' while
     ;
 
 for:    'F' '(' INTEGER ')' ifeq optional_block goto label
@@ -224,24 +223,24 @@ for:    'F' '(' INTEGER ')' ifeq optional_block goto label
         { }
     ;
 
-// function:   type ID '(' declaration_list ')' optional_block                             { }
-//     |   type ID '(' error ')' optional_block                                            { }
+// function:   type ID '(' declaration_list ')' optional_block
+//     |   type ID '(' error ')' optional_block
 //     ;
 
-print_list: expr                           { stdout_code($1); }
-    |   expr                               { stdout_code($1); } ',' print_list                
+print_list: expr                            { stdout_code($1); }
+    |   expr                                { stdout_code($1); } ',' print_list                
     ;
 
-print:  'P' '(' print_list ')'             { std_out_ln();    }
+print:  'P' '(' print_list ')'              { std_out_ln(); }
     ;
 
-label:  /* nothing */   { $$ = write_label(); }
+label:  /* nothing */                       { $$ = write_label(); }
     ;
 
-goto:  /* nothing */   { $$ = write_code("goto L_"); }
+goto:  /* nothing */                        { $$ = write_code("goto L_"); }
     ;
 
-ifeq:  /* nothing */   { $$ = write_code("ifeq L_"); }
+ifeq:  /* nothing */                        { $$ = write_code("ifeq L_"); }
     ;
 
 %%
