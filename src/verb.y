@@ -20,7 +20,7 @@ const char* source_file = "";
         int silent;
         char *line;
     } user_context;
-    typedef struct {
+    typedef struct flow_t {
 		struct vector *go_in, *go_out, *go_next;
 	} flow_t;
 }
@@ -34,6 +34,8 @@ const char* source_file = "";
 
 %code {
     static void location_print(FILE* out, const YYLTYPE* loc);
+    flow_t* flow_create();
+    void flow_delete(flow_t* flow);
 }
 
 %verbose
@@ -80,6 +82,7 @@ const char* source_file = "";
 %nterm <ival> expr type value call label goto ifeq
 %nterm <symb_val> decla_or_assign
 %nterm <vec_val> decla_or_assign_list
+%nterm <flow_val> elseif
 
 %start program
 
@@ -184,18 +187,19 @@ flux:   if                                  { }
     |   for                                 { }
     ;
 
-if:     '?' '(' expr ')' ifeq optional_block goto label
-        elseif else label { backpatch($5, $8); backpatch($7, $11); }
-    |   '?' '(' error ')' optional_block elseif else    { }
+if:     '?' '(' expr ')' ifeq optional_block goto label elseif else label 
+        { backpatch($5, $8); backpatch($7, $11); backpatch_many($9->go_out, $11); }
+    |   '?' '(' error ')' optional_block elseif else
     ;
 
-elseif: /* nothing */                                   { }
-    |   '$' '(' expr ')' optional_block elseif          { }
-    |   '$' '(' error ')' optional_block elseif         { }
+elseif: /* nothing */                                   { $$ = flow_create(); }
+    |   '$' '(' expr ')' ifeq optional_block goto label elseif
+        { $$ = $9; backpatch($5, $8); vector_pushback_ll($9->go_out, $7); }
+    |   '$' '(' error ')' optional_block elseif         { $$ = flow_create(); }
     ;
 
-else:   /* nothing */                                   { }
-    |   ':' optional_block                              { }
+else:   /* nothing */
+    |   ':' optional_block
     ;
 
 switch: '#' '{' switch_body '}'                         { }
