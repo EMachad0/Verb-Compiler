@@ -1,9 +1,5 @@
-I f(I a, S b) min(a, b);
+I f() = 5 + 10;
 
-I a = input();
-I b = input();
-print(f(a, b));
-
-
-if (a < b) if (a == b)
-elseif
+// I a = R(I);
+// I b = R(I);
+P(f());

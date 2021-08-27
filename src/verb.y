@@ -95,7 +95,7 @@ program:    { loc_uctx_init(&@$, uctx); generate_header(source_file); }
 block:  /* nothing */
     |   statement block
     |   flux block
-    // |   function block
+    |   function block
     ;
 
 statement:  declaration ';'
@@ -103,6 +103,7 @@ statement:  declaration ';'
     |   expr ';'                            { write_code("pop"); }
     |   error ';'
     |   print ';'
+    |   '=' expr ';'                        { write_return($2); }
     ;
 
 optional_block: statement
@@ -113,6 +114,7 @@ optional_block: statement
 type:   'I'                                 { $$ = INT_T; }
     |   'D'                                 { $$ = FLOAT_T; }
     |   'S'                                 { $$ = STR_T; }
+    |   'V'                                 { $$ = INT_T; }
     ;
 
 value:  INTEGER                             { $$ = INT_T; write_code(concat("ldc ", i_to_str($1))); }
@@ -163,7 +165,7 @@ call:   ID                                  { $$ = load_var($1); }
     |   ID UNARYOP                          { $$ = load_var_inc($1); }
     |   UNARYOP ID                          { $$ = load_inc_var($2); }
     |   'R' '(' type ')'                    { $$ = $3; input_var($3); }
-    // |   ID '(' ')'
+    |   ID '(' ')'                          { $$ = function_call($1); }
     // |   ID '(' expr_list ')'
     // |   ID '(' error ')'
     ;
@@ -224,9 +226,11 @@ for:    'F' '(' INTEGER ')' ifeq optional_block goto label
         { }
     ;
 
-// function:   type ID '(' declaration_list ')' optional_block
-//     |   type ID '(' error ')' optional_block
-//     ;
+function:   type ID '(' ')'
+            { write_function_header($1, $2); }
+            optional_block
+            { write_function_footer($1); }
+    ;
 
 print_list: expr                            { stdout_code($1); }
     |   expr                                { stdout_code($1); } ',' print_list                

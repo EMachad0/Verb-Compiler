@@ -6,7 +6,7 @@
 #include "../hashmap/hashmap.h"
 #include "../hashmap/hashmap_symbol.h"
 
-typedef enum {INT_T, FLOAT_T, STR_T, ERROR_T} type_enum;
+typedef enum {INT_T, FLOAT_T, STR_T, ERROR_T, VOID_T, FUNCTION_T } type_enum;
 
 void jasmin_init();
 void jasmin_delete();
@@ -17,6 +17,7 @@ void generate_footer();
 void generate_header();
 int write_code(char *s);
 bool check_id(const char* id);
+void set_id(const char* id, int type);
 void write_const(int type);
 void write_store(int type, int lid);
 void write_load(int type, int lid);
@@ -38,5 +39,9 @@ void cast(int t1, int t2);
 void backpatch(int pos, int l_idx);
 void backpatch_many(vector *vec, int l_idx);
 void input_var(int type);
+void write_function_header(int type, char* name);
+void write_return(int type);
+void write_function_footer(int type);
+int function_call(char* name);
 
 #endif
