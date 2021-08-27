@@ -1,0 +1,76 @@
+/*
+arquivo_aberto = open(arquivo, 'r')
+
+a = float(arquivo_aberto.readline())
+b = float(arquivo_aberto.readline())
+c = float(arquivo_aberto.readline())
+# Fechamento do arquivo
+arquivo_aberto.close()
+*/
+
+D a = 10, b = 4, c = 9;
+
+P("a = ", a);
+P("b = ", b);
+P("c = ", c);
+P("\n");
+P("Análise dos lados de um triângulo\n");
+
+// a = float(input("Digite o tamanho do 1o. lado do triângulo: "))
+// b = float(input("Digite o tamanho do 2o. lado do triângulo: "))
+// c = float(input("Digite o tamanho do 3o. lado do triângulo: "))
+
+// Teste: condição de existência de um triângulo
+// | b - c | < a < b + c
+// | a - c | < b < a + c
+// | a - b | < c < a + b
+
+D ma = b - c;
+D mb = a - c;
+D mc = a - b;
+
+? (ma < 0.0) ma = -ma;
+? (mb < 0.0) mb = -mb;
+? (mc < 0.0) mc = -mc;
+
+? (((a > ma) && (a < (b+c))) && ((b > mb) && (b < (a+c))) && ((c > mc) && (c < (a+b)))) {
+    P("\nOk-> dados validados!");
+    D maior, a1, b1, c1;
+    ? ((a > b) && (a > c)) {
+        maior = 1;
+        a1 = a;
+        b1 = b;
+        c1 = c;
+    } : {
+        ? ((b > a) && (b > c)) {
+            maior = 2;
+            a1 = b;
+            b1 = a;
+            c1 = c;
+        } : {
+            ? ((c > a) && (c > b)) {
+                maior = 3;
+                a1 = c;
+                b1 = a;
+                c1 = b;
+            } : maior = 4;
+        }
+    }
+
+    // Cálculos
+    ? (maior == 4.0) P("\nTrata-se de um triângulo equilátero!\n(lados e ângulos iguais...)");
+    : {
+        ? ((a == b) || (b == c) || (c == a)) P("\nTrata-se de um triângulo isósceles!");
+        : P("\nTrata-se de um triângulo escaleno!");
+        D a2 = a1 * a1; // a1^2
+        D b2 = b1 * b1; // b1^2
+        D c2 = c1 * c1; // c1^2
+        ? (a2 < (b2+c2)) P("Trata-se de um triângulo acutângulo!");
+        : {
+            ? (a2 == (b2+c2)) P("Trata-se de um triângulo retângulo!");
+            : P("Trata-se de um triângulo obtusângulo!");
+        }
+    }
+} : P("\nNão se trata de um triângulo!");
+    
+    
