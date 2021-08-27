@@ -217,10 +217,11 @@ while:  'W' label '(' expr ')' ifeq optional_block goto label    { backpatch($6,
 do:     'O' '{' block '}' while                         { }
     ;
 
-for:    'F' '(' expr ')' optional_block else                                            { }
-    |   'F' '(' INTEGER ';' expr ';' INTEGER ')' optional_block else                    { }
-    |   'F' '(' declaration_list ';' expr ';' assignment_list ')' optional_block else   { }
-    |   'F' '(' error ')' optional_block else                                           { }
+for:    'F' '(' INTEGER ')' ifeq optional_block goto label
+    |   'F' '(' declaration ';' label expr ifeq goto ';' label assignment_list goto ')' label optional_block goto label
+        { backpatch($7, $17); backpatch($8, $14); backpatch($16, $10); backpatch($12, $5); }
+    |   'F' '(' error ')' optional_block goto label
+        { }
     ;
 
 // function:   type ID '(' declaration_list ')' optional_block                             { }
