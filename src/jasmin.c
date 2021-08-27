@@ -315,7 +315,7 @@ void backpatch(int pos, int l_idx) {
 }
 
 void backpatch_many(vector *vec, int l_idx) {
-	if (vector_size(vec) == 0) return;
+	if (vector_empty(vec)) return;
 	char* idx_s = i_to_str(l_idx);
 	int idx_sz = strlen(idx_s);
 	for(int i = 0; i < vector_size(vec); i++) {
