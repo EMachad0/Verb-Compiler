@@ -5,6 +5,7 @@
 int main(){
     vector* v_int = vector_create();
 
+
     for (int i=0; i < 100; i++) {
         vector_pushback_ll(v_int, i);
     }
@@ -23,7 +24,7 @@ int main(){
 
     printf("tamanho: %i\n", vector_size(v_int));
     
-    free(v_int);
+    vector_delete(v_int);
 
     vector *v_char = vector_create();
 
@@ -66,7 +67,12 @@ int main(){
     printf("%s\n", (char *) vector_get_char(v_char, 8));
     printf("%s\n", (char *) vector_get_char(v_char, 9));
 
+    vector *empty = vector_create();
 
-    free(v_char);
+    printf("vector char is empty %i\n", vector_empty(v_char));
+    printf("empty vector is empty %i\n", vector_empty(empty));
+
+    vector_delete(v_char);
+    vector_delete(empty);
 
 }
