@@ -57,6 +57,6 @@ char *to_yellow(const char* text) {
 }
 
 char *to_blue(const char* text) {
-    char res = concat_many(3, BLUE, text, RESET);
+    char *res = concat_many(3, BLUE, text, RESET);
     return res;
 }
