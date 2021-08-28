@@ -175,9 +175,7 @@ assignment_list:    assignment
     ;
 
 flux:   if
-    |   switch
     |   while
-    |   do
     |   for
     ;
 
@@ -194,17 +192,7 @@ else:   /* nothing */
     |   ':' optional_block
     ;
 
-switch: '#' '{' switch_body '}'
-    ;
-
-switch_body:    /* nothing */
-    |   value ':' statement switch_body
-    ;
-
 while:  'W' label '(' expr ')' ifeq optional_block goto label    { backpatch($6, $9); backpatch($8, $2); }
-    ;
-
-do:     'O' '{' block '}' while
     ;
 
 for:    'F' '(' INTEGER ')' ifeq optional_block goto label
@@ -250,9 +238,9 @@ ifeq:  /* nothing */                        { $$ = write_code("ifeq L_"); }
 %%
 
 static void location_print(FILE *out, const YYLTYPE* loc) {
-    fprintf (out, "%d.%d", loc->first_line, loc->first_column - 1);
-    if (loc->first_line < loc->last_line) fprintf (out, "-%d.%d", loc->last_line, loc->last_column);
-    else if (loc->first_column < loc->last_column) fprintf (out, "-%d", loc->last_column);
+    fprintf (out, BLUE "%d.%d" RESET, loc->first_line, loc->first_column - 1);
+    if (loc->first_line < loc->last_line) fprintf (out, BLUE "-%d.%d" RESET, loc->last_line, loc->last_column);
+    else if (loc->first_column < loc->last_column) fprintf (out, BLUE "-%d" RESET, loc->last_column);
 }
 
 static void error_line_print(FILE *out, const YYLTYPE* loc, const user_context* uctx) {
@@ -283,13 +271,13 @@ static int yyreport_syntax_error(const yypcontext_t* ctx, user_context* uctx) {
         if (n < 0) res = n; // Forward errors to yyparse.
         else {
             for (int i = 0; i < n; ++i)
-                fprintf (stderr, "%s %s", i == 0 ? ": expected":" or", yysymbol_name(expected[i]));
+                fprintf (stderr, "%s %s", i == 0 ? ": expected":" or", to_yellow(yysymbol_name(expected[i])));
         }
     }
     {   // Report the unexpected token.
         yysymbol_kind_t lookahead = yypcontext_token(ctx);
         if (lookahead != YYSYMBOL_YYEMPTY)
-            fprintf(stderr, " before %s", yysymbol_name(lookahead));
+            fprintf(stderr, " before %s", to_yellow(yysymbol_name(lookahead)));
     }
     fprintf(stderr, "\n");
     error_line_print(stderr, loc, uctx);

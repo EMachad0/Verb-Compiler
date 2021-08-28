@@ -11,7 +11,7 @@ extern void write_line(int n);
 SCO             \;|\$|\:|\,|\(|\)|\{|\}|\[|\]
 
 /* keywords */
-KEYWORD         [DFIPORSVW?#@]
+KEYWORD         [DFIPRSVW?@]
 
 /* variaveis */
 ID              [a-z_][a-z0-9_]*
