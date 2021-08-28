@@ -196,9 +196,9 @@ else:   /* nothing */
 while:  'W' label '(' expr ')' ifeq optional_block goto label    { backpatch($6, $9); backpatch($8, $2); }
     ;
 
-for:    'F' '(' INTEGER ')' ifeq optional_block goto label
-    |   'F' '(' declaration ';' label expr ifeq goto ';' label assignment_list goto ')' label optional_block goto label
+for:    'F' '(' declaration ';' label expr ifeq goto ';' label assignment_list goto ')' label optional_block goto label
         { backpatch($7, $17); backpatch($8, $14); backpatch($16, $10); backpatch($12, $5); }
+    // |   'F' '(' expr ')' ifeq optional_block goto label // todo
     ;
 
 function:   '@' type ID '(' ')'
