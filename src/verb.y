@@ -263,7 +263,7 @@ static int yyreport_syntax_error(const yypcontext_t* ctx, user_context* uctx) {
     int res = 0;
     const YYLTYPE* loc = yypcontext_location(ctx);
     location_print(stderr, loc);
-    fprintf(stderr, ":" RED " syntax error " RESET);
+    fprintf(stderr, ":" RED " syntax error" RESET ": ");
     {   // Report the tokens expected at this point.
         enum { TOKENMAX = 5 };
         yysymbol_kind_t expected[TOKENMAX];
@@ -271,7 +271,7 @@ static int yyreport_syntax_error(const yypcontext_t* ctx, user_context* uctx) {
         if (n < 0) res = n; // Forward errors to yyparse.
         else {
             for (int i = 0; i < n; ++i)
-                fprintf (stderr, "%s %s", i == 0 ? ": expected":" or", to_yellow(yysymbol_name(expected[i])));
+                fprintf (stderr, "%s %s", i == 0 ? " expected":" or", to_yellow(yysymbol_name(expected[i])));
         }
     }
     {   // Report the unexpected token.

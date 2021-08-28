@@ -320,7 +320,7 @@ int input_var(int type) {
 	} else if (type == FLOAT_T) {
 		write_code("invokestatic output/Verb/input_float()F");
 	} else if (type == STR_T) {
-		print_error(concat(RED_ERROR "Invalid input type for type", to_yellow(get_type_string(type))));
+		print_error(concat(RED_ERROR ": Invalid input type for type", to_yellow(get_type_string(type))));
 	}
 	return type;
 }

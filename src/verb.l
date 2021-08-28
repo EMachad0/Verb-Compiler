@@ -158,7 +158,7 @@ BLOCK_COMMENT   \/\*[^*]*\*\/
     
 .               {   yylloc->first_column = ++yylloc->last_column;
                     strcat(uctx->line, yytext);
-                    char *error = concat_many(5, RED, "lexical error ", RESET, " unexpected ", to_yellow(yytext) );
+                    char *error = concat_many(5, RED, "lexical error", RESET, ":  unexpected ", to_yellow(yytext) );
                     yyerror(yylloc, uctx, error);
                     return YYerror;
                 }
