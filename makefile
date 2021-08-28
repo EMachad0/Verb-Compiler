@@ -27,7 +27,7 @@ output_dir:
 
 help:
 	@echo "Verb-Compiler - https://github.com/EMachad0/Verb-Compilator\n\n"
-	@echo "To this compiler try the command:\n" 
+	@echo "To try this compiler use the command:\n"
 	@echo " 		make f=tests/<verb-file>.ve\n"
 	@echo "OTHER COMMANDS:\n"
 	@echo "		make f=<verb-file>.ve     -- Main way for running this project"
