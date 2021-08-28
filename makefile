@@ -25,5 +25,21 @@ graph: src/verb.y
 output_dir:
 	mkdir -p output
 
+help:
+	@echo "Verb-Compiler - https://github.com/EMachad0/Verb-Compilator\n\n"
+	@echo "To this compiler try the command:\n" 
+	@echo " 		make f=tests/<any-file>.ve\n"
+	@echo "OTHER COMMADS:\n"
+	@echo "		make                   Only compiles and expects the input"
+	@echo "		make f=<code>.ve       Compiles and runs the code in <code>.ve file in JVM"
+	@echo "		make compile           Only compile all the code to the ./output directory"
+	@echo "		make run f=<code>.ve   Runs the <code>.ve in JVM"
+	@echo "		make flex              Compile only the flex file src/verb.l"
+	@echo "		make bison             Compile only the byson file src/verb.y"
+	@echo "		make graph             Creates the automata for the syntax defined in src/verb.y\n"
+	@echo "Made by:"
+	@echo "           Eliton Machado  https://github.com/EMachad0"
+	@echo "           Igor Froehner   https://github.com/IgorFroehner"
+
 clean:
 	rm -r output

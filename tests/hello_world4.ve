@@ -1,0 +1,15 @@
+
+S f_hello() = "Hello ";
+
+S f_world() = "World";
+
+S excl_create(S a) {
+    S b = a;
+    = b;
+}
+
+S hello = f_hello();
+S world = f_world();
+S excl = excl_create("!");
+
+P(hello, world, excl);

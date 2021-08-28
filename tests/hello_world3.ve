@@ -1,0 +1,10 @@
+
+S f_hello() = "Hello ";
+S f_world() = "World";
+S f_!() = "!";
+
+S hello = f_hello();
+S world = f_world();
+S excl = f_!();
+
+P(hello, world, excl);
