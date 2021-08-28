@@ -3,7 +3,7 @@
 
 #define RED "\033[1;31m"
 #define RESET "\x1B[0m"
-#define BLUE "\x1B[34m"
+#define BLUE "\x1B[36m"
 #define RED_ERROR "\033[1;31merror\x1B[0m"
 #define YELLOW "\033[1;33m"
 
