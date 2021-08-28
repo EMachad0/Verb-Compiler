@@ -1,12 +1,13 @@
-I bin_exp(I b, I e) {
-    I res = 0;
-    I exp = 1;
-    W (b > 0) {
-        exp *= e;
-        ? (b & 1) res += b;
-        b /= 2;
+@ I bin_exp(I b, I e, I mod) {
+    I res = 1;
+    W (e) {
+        ? (e & 1) res = res * b % mod;
+        b *= b;
+        b %= mod;
+        e /= 2;
     }
-    res;
+    = res;
 }
 
-print(bin_exp(input(), input()));
+I mod = 40004;
+P(bin_exp(R(I), R(I), mod));

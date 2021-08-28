@@ -1,11 +1,8 @@
-I fib() {
-    I a = 0, b = 1;
-    F (I i = 0; i < 10; i += 1) {
-        I t = b;
-        b = a + b;
-        a = b;
-    }
-    = b;
+@ I fib(I n) {
+    ?(n <= 1) = n;
+    = fib(n-2) + fib(n-1);
 }
 
-P(fib());
+F (I i = 0; i <= 20; i += 1) {
+    P(i, ": ", fib(i));
+}

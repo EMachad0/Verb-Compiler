@@ -5,23 +5,23 @@
 #include "jasmin.h"
 #include "../utils/str_utils.h"
 
+#define HASHMAP_BUCKET_SZ 100005
+
 int id_cont, label_cont;
-bool header_writing;
-hashmap *id_map, *fun_id_map;
-vector *code_list, *header_list;
+hashmap *id_map, *fun_map;
+vector *code_list;
 user_context* uctx;
 YYLTYPE* loc;
 
 void jasmin_init() {
-	id_cont = label_cont = 1;
-	header_writing = false;
-    id_map = hashmap_create(100005); 
+	id_cont = label_cont = 0;
+    fun_map = hashmap_create(HASHMAP_BUCKET_SZ);
     code_list = vector_create(); 
-    header_list = vector_create(); 
 }
 
 void jasmin_delete() {
     hashmap_delete(id_map);
+    hashmap_delete(fun_map);
     vector_delete(code_list);
 }
 
@@ -31,23 +31,16 @@ void loc_uctx_init(YYLTYPE* _loc, user_context* _uctx) {
 }
 
 int write_code(char *s) {
-	if (header_writing) {
-		vector_pushback_char(header_list, s);
-		return vector_size(header_list) - 1;
-	}
 	vector_pushback_char(code_list, s);
 	return vector_size(code_list) - 1;
 }
 
 void write_line(int n) {
-	write_code(concat(".line ", i_to_str(n)));
+	// write_code(concat(".line ", i_to_str(n)));
 }
 
 void print_code(void) {
     FILE* f = fopen("output/verb.j", "w");
-	for (int i = 0; i < vector_size(header_list); i++) {
-        fprintf(f, "%s\n", vector_get_char(header_list, i));
-    }
     for (int i = 0; i < vector_size(code_list); i++) {
         fprintf(f, "%s\n", vector_get_char(code_list, i));
     }
@@ -56,10 +49,6 @@ void print_code(void) {
 
 void print_error(char* msg) {
 	yyerror(loc, uctx, msg);
-}
-
-bool check_id(const char* id) {
-	return hashmap_has(header_writing? fun_id_map:id_map, id);
 }
 
 void write_const(int type) {
@@ -95,6 +84,18 @@ void write_load(int type, int lid) {
 int write_label() {
 	write_code(concat_many(3, "L_", i_to_str(label_cont), ":"));
 	return label_cont++;
+}
+
+bool check_id(const char* id) {
+	return hashmap_has(id_map, id);
+}
+
+symbol* get_id(char* id) {
+	return get_symbol(id_map, id);
+}
+
+void set_id(const char* id, int type) {
+	set_symbol(id_map, id, id_cont++, type);
 }
 
 void assign_var(char* id, int type, char* op) {
@@ -272,18 +273,10 @@ char* get_type_code(int type) {
 	}
 }
 
-symbol* get_id(char* id) {
-	return get_symbol(header_writing? fun_id_map:id_map, id);
-}
-
-void set_id(const char* id, int type) {
-	set_symbol(header_writing? fun_id_map:id_map, id, id_cont++, type);
-}
-
 int load_inc_var(char* id) {
 	symbol* smb = get_id(id);
 	if (smb->type != INT_T) {
-		print_error(concat_many(3, RED_ERROR ": Invalid operator for type ", get_type_string(smb->type), " expect INT_T"));
+		print_error(concat_many(3, RED_ERROR ": Invalid operator for type ", to_yellow(get_type_string(smb->type)), " expect INT_T"));
 		return ERROR_T;
 	}
 	write_code(concat_many(3, "iinc ", i_to_str(smb->lid), " 1"));
@@ -294,7 +287,7 @@ int load_inc_var(char* id) {
 int load_var_inc(char* id) {
 	symbol* smb = get_id(id);
 	if (smb->type != INT_T) {
-		print_error(concat_many(4, RED_ERROR ": Invalid operator for type ", get_type_string(smb->type), " expect INT_T"));
+		print_error(concat_many(4, RED_ERROR ": Invalid operator for type ", to_yellow(get_type_string(smb->type)), " expect INT_T"));
 		return ERROR_T;
 	}
 	load_var(id);
@@ -303,54 +296,79 @@ int load_var_inc(char* id) {
 }
 
 void backpatch(int pos, int l_idx) {
-	vector* list = header_writing? header_list:code_list;
 	char* idx_s = i_to_str(l_idx);
-	char* ori = vector_get_char(list, pos);
-	vector_set_char(list, pos, concat(ori, idx_s));
+	char* ori = vector_get_char(code_list, pos);
+	vector_set_char(code_list, pos, concat(ori, idx_s));
 	free(idx_s);
 }
 
 void backpatch_many(vector *vec, int l_idx) {
 	if (vector_empty(vec)) return;
-	vector* list = header_writing? header_list:code_list;
 	char* idx_s = i_to_str(l_idx);
 	int idx_sz = strlen(idx_s);
 	for(int i = 0; i < vector_size(vec); i++) {
 		int pos = vector_get_ll(vec, i);
-		char* ori = vector_get_char(list, pos);
-		vector_set_char(list, pos, concat(ori, idx_s));
+		char* ori = vector_get_char(code_list, pos);
+		vector_set_char(code_list, pos, concat(ori, idx_s));
 	}
 	free(idx_s);
 }
 
-void input_var(int type) {
+int input_var(int type) {
 	if (type == INT_T) {
 		write_code("invokestatic output/Verb/input_int()I");
 	} else if (type == FLOAT_T) {
 		write_code("invokestatic output/Verb/input_float()F");
 	} else if (type == STR_T) {
-		print_error("String nput not implemented");
+		print_error(concat(RED_ERROR "Invalid input type for type", to_yellow(get_type_string(type))));
 	}
+	return type;
 }
 
-void write_function_header(int type, char *name) {
-	if (check_id(name)) {
-		print_error(concat_many(3, RED_ERROR ": variable ", to_yellow(name), " already declared"));
+function_t* function_create(int type, char *name, vector* params) {
+	function_t* fun = malloc(sizeof(function_t));
+	fun->type = type;
+	fun->name = name;
+	fun->params = params;
+	int len = 1, null_pos = 0; // +1 for NULL
+    for(int i = 0; i < vector_size(params); i++) {
+		symbol* smb = vector_get(params, i);
+		smb->lid = vector_size(params) - i - 1;
+		len += strlen(get_type_code(smb->type));
+	}
+    char *param = malloc(len * sizeof(char));
+    for(int i = 0; i < vector_size(params); i++) {
+        symbol* smb = vector_get(params, i);
+		char* s = get_type_code(smb->type);
+        strcpy(param + null_pos, s);
+        null_pos += strlen(s);
+    }
+	fun->full_header = concat_many(5, name, "(", param, ")", get_type_code(type));
+	return fun;
+}
+
+void write_function_header(function_t* fun) {
+	if (hashmap_has(fun_map, fun->name)) {
+		print_error(concat_many(3, RED_ERROR ": function ", to_yellow(fun->name), " already declared"));
 		return;
 	}
-	set_id(name, type);
-	header_writing = true;
-	fun_id_map = hashmap_create(100005);
-	write_code(concat_many(4, ".method public static ",name,"()",get_type_code(type)));
-	write_code(".limit locals 100");
-	write_code(".limit stack 100");
+	hashmap_set(fun_map, fun->name, (void*) fun);
+	id_map = hashmap_create(HASHMAP_BUCKET_SZ);
+	id_cont = vector_size(fun->params);
+	write_code(concat(".method public static ", fun->full_header));
+	for (int i = 0; i < vector_size(fun->params); i++) {
+		symbol* smb = vector_get(fun->params, i);
+		if (check_id(smb->id)) {
+			print_error(concat_many(3, RED_ERROR ": variable ", to_yellow(smb->id), " already declared"));
+			continue;
+		}
+		hashmap_set(id_map, smb->id, (void*) smb);
+	}
+	write_code("\t.limit locals 100");
+	write_code("\t.limit stack 100");
 }
 
 void write_return(int type) {
-	if (!header_writing) {
-		print_error(RED_ERROR ": Wrong return type");
-		return;
-	}
 	if (type == INT_T) write_code("ireturn");
 	else if (type == FLOAT_T) write_code("freturn");
 	else if (type == STR_T) write_code("areturn");
@@ -358,38 +376,33 @@ void write_return(int type) {
 }
 
 void write_function_footer(int type) {
+	hashmap_delete(id_map);
 	write_const(type);
 	write_return(type);
 	write_code(".end method\n");
-	header_writing = false;
-	hashmap_delete(fun_id_map);
 }
 
 int function_call(char* name) {
-	if (!check_id(name)) {
-		print_error(concat_many(3, RED_ERROR ": variable ", to_yellow(name), " not declared"));
+	if (!hashmap_has(fun_map, name)) {
+		print_error(concat_many(3, RED_ERROR ": function ", to_yellow(name), " not declared"));
 		return ERROR_T;
 	}
-	symbol* smb = get_symbol(id_map, name);
-	write_code(concat_many(4, "invokestatic output/Verb/",name,"()",get_type_code(smb->type)));
-	return smb->type;
+	function_t* fun = hashmap_get(fun_map, name);
+	write_code(concat("invokestatic output/Verb/", fun->full_header));
+	return fun->type;
 }
 
-void generate_footer() {
-	write_code("; code end");
-	write_code("return");
-	write_code(".end method");
-}
-
-void generate_header(char* source_file) {
-	header_writing = true;
+void generate_header(const char* source_file) {
 	write_code(concat(".source ", source_file));
-	write_code(".class public output/Verb\n.super java/lang/Object\n"); //code for defining class
+	write_code(".class public output/Verb\n.super java/lang/Object\n");
 	write_code(".method public <init>()V");
 	write_code("	aload_0");
 	write_code("	invokenonvirtual java/lang/Object/<init>()V");
 	write_code("	return");
 	write_code(".end method\n");
+}
+
+void generate_built_in_functions() {
 	write_code(".method public static input_int()I");
 	write_code("	.limit locals 10");
 	write_code("	.limit stack 10");
@@ -520,10 +533,19 @@ void generate_header(char* source_file) {
 	write_code("	invokevirtual java/io/PrintStream/println()V");
 	write_code("	return");
 	write_code(".end method\n");
-	header_writing = false;
+}
+
+void generate_main_header() {
+	id_map = hashmap_create(HASHMAP_BUCKET_SZ);
+	id_cont = 0;
 	write_code(".method public static main([Ljava/lang/String;)V");
 	write_code(".limit locals 100\n.limit stack 100");
-	/*generate line*/
 	write_code("; code start");
 	write_line(1);
+}
+
+void generate_main_footer() {
+	write_code("; code end");
+	write_code("return");
+	write_code(".end method");
 }
