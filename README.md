@@ -3,23 +3,23 @@
 Compilador para a linguagem de própria autoria "Verb" feito usando [flex e bison](https://web.iitd.ac.in/~sumeet/flex__bison.pdf), a linguagem é compilada para [assembly JVM](https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-1.html) e pode ser executada usando [jasmin](http://jasmin.sourceforge.net/about.html) e java.
 
 <p align="center">
-  <a href="#1">Linguagem</a>
+  <a href="#1-linguagem">Linguagem</a>
   •
-  <a href="#2">Análise Léxica</a>
+  <a href="#2-análise-léxica">Análise Léxica</a>
   •
-  <a href="#3">Gramática</a>
+  <a href="#3-gramática">Gramática</a>
   •
-  <a href="#4">Reconhecimento de erros</a>
+  <a href="#4-geração-de-bytecode">Geração de Bytecode</a>
   •
-  <a href="#5">Reconhecimento de erros</a>
+  <a href="#5-reconhecimento-de-erros">Reconhecimento de erros</a>
   •
-  <a href="#6">Comentários Sobre a Linguagem</a>
+  <a href="#6-comentários-sobre-a-linguagem">Comentários Sobre a Linguagem</a>
+  <br>
+  <a href="#7-comentários-sobre-as-ferramentas">Comentários Sobre as Ferramentas</a>
   •
-  <a href="#7">Comentários Sobre as Ferramentas</a>
+  <a href="#8-melhorias">Melhorias</a>
   •
-  <a href="#8">Melhorias</a>
-  •
-  <a href="#8">Trabalhos de Referência e Inspirações</a>
+  <a href="#9-trabalhos-de-referência-e-inspirações">Trabalhos de Referência e Inspirações</a>
 </p>
 
 * Para compilar use o comando: 
