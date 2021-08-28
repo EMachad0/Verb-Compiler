@@ -1,5 +1,1 @@
-D a = R(D), b = R(D), c = R(D);
-
-D media = (2*a + 3*b + 5*c) / 10;
-
-P("MEDIA = ", media);
+? (1 == 0 && 2 <= 3) P(2);

@@ -12,7 +12,7 @@ extern FILE* yyin;
 
 bool found_error = false;
 
-const char* source_file = "";
+const char* source_file = NULL;
 %}
 
 %code requires {
@@ -313,7 +313,6 @@ void flow_delete(flow_t* flow) {
 }
 
 int main(int argc, const char **argv) {
-    yyin = stdin;
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-p") == 0) yydebug = 1;
         else {
@@ -321,6 +320,11 @@ int main(int argc, const char **argv) {
             source_file = (source_file[0] == '.')? argv[i]+1 : argv[i];
             yyin = fopen(argv[i], "r");
         } 
+    }
+
+    if (!source_file) {
+        fprintf(stderr, "%s: Expected a file, but got nothing!\nUse \"%s\" for instructions\n", to_red("error"), to_yellow("make help"));
+        return 1;
     }
 
     user_context* uctx = init_uctx();

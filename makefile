@@ -1,7 +1,7 @@
 
-all: compile run
+all: compiler run
 
-compile: output_dir bison flex output/verb.tab.c output/verb.lex.c
+compiler: output_dir bison flex output/verb.tab.c output/verb.lex.c
 	cc -o output/verb output/verb.tab.c output/verb.lex.c hashmap/avltree.c hashmap/hashmap.c hashmap/hashmap_symbol.c vector/vector.c utils/str_utils.c src/jasmin.c
 
 run:
@@ -28,15 +28,14 @@ output_dir:
 help:
 	@echo "Verb-Compiler - https://github.com/EMachad0/Verb-Compilator\n\n"
 	@echo "To this compiler try the command:\n" 
-	@echo " 		make f=tests/<any-file>.ve\n"
-	@echo "OTHER COMMADS:\n"
-	@echo "		make                   Only compiles and expects the input"
-	@echo "		make f=<code>.ve       Compiles and runs the code in <code>.ve file in JVM"
-	@echo "		make compile           Only compile all the code to the ./output directory"
-	@echo "		make run f=<code>.ve   Runs the <code>.ve in JVM"
-	@echo "		make flex              Compile only the flex file src/verb.l"
-	@echo "		make bison             Compile only the byson file src/verb.y"
-	@echo "		make graph             Creates the automata for the syntax defined in src/verb.y\n"
+	@echo " 		make f=tests/<verb-file>.ve\n"
+	@echo "OTHER COMMANDS:\n"
+	@echo "		make f=<verb-file>.ve     -- Main way for running this project"
+	@echo "		                             Create the compiler, compiles and runs the file"
+	@echo "		make compiler             -- Outputs the compiler binary to ./output/verb"
+	@echo "		make run f=<verb-file>.ve -- Compile and runs <verb-file>.ve in JVM"
+	@echo "		make graph                -- Creates the automata for the syntax defined in src/verb.y"
+	@echo "		                             Takes a while\n"
 	@echo "Made by:"
 	@echo "           Eliton Machado  https://github.com/EMachad0"
 	@echo "           Igor Froehner   https://github.com/IgorFroehner"
