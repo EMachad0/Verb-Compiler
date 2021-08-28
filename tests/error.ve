@@ -13,6 +13,7 @@ F() {
     a = 0 + ++2 + 5;
 }
 
+I a;
 I a 1234567890;
 
 // semantic errors
