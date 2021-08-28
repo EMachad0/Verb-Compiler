@@ -100,7 +100,6 @@ block:  /* nothing */
 
 statement:  declaration ';'
     |   assignment ';'
-    |   expr ';'                            { write_code("pop"); }
     |   print ';'
     |   '=' expr ';'                        { write_return($2); }
     ;
@@ -156,6 +155,8 @@ decla_or_assign: ID                         { $$ = make_symbol($1, -1, -1); }
 
 assignment: ID '=' expr                     { assign_var($1, $3, "="); }
     |   ID ATTOP expr                       { assign_var($1, $3, $2); }
+    |   ID UNARYOP                          { write_code(concat_many(3, "iinc ", i_to_str(get_id($1)->lid), " 1")); }
+    |   UNARYOP ID                          { write_code(concat_many(3, "iinc ", i_to_str(get_id($2)->lid), " 1")); }
     ;
 
 call:   ID                                  { $$ = load_var($1); }
