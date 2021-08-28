@@ -18,7 +18,7 @@ Compilador para a linguagem de própria autoria "Verb" feito usando [flex e biso
   <a href="#7-comentários-sobre-as-ferramentas">Comentários Sobre as Ferramentas</a>
   •
   <a href="#8-melhorias">Melhorias</a>
-  •
+  <br>
   <a href="#9-trabalhos-de-referência-e-inspirações">Trabalhos de Referência e Inspirações</a>
 </p>
 
