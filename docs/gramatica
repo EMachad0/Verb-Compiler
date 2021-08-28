@@ -1,121 +1,85 @@
-    0 $accept: program $end
-
-    1 $@1: %empty
-
-    2 $@2: %empty
-
-    3 program: $@1 function_list $@2 block
-    4        | error program
-
-    5 block: %empty
-    6      | statement block
-    7      | flux block
-
-    8 statement: declaration ';'
-    9          | assignment ';'
-   10          | print ';'
-   11          | '=' expr ';'
-
-   12 optional_block: statement
-   13               | '{' block '}'
-
-   14 type: 'I'
-   15     | 'D'
-   16     | 'S'
-   17     | 'V'
-
-   18 value: INTEGER
-   19      | FLOAT
-   20      | STRING
-
-   21 expr: value
-   22     | call
-   23     | expr '<' expr
-   24     | expr '>' expr
-   25     | expr CMPOP expr
-   26     | expr '|' expr
-   27     | expr '^' expr
-   28     | expr '&' expr
-   29     | expr BOOLOP expr
-   30     | expr BITSHIFTOP expr
-   31     | expr '+' expr
-   32     | expr '-' expr
-   33     | expr '*' expr
-   34     | expr '/' expr
-   35     | expr '%' expr
-   36     | '-' expr
-   37     | '!' expr
-   38     | '(' type expr ')'
-   39     | '(' expr ')'
-
-   40 declaration: type decla_or_assign_list
-
-   41 decla_or_assign_list: decla_or_assign
-   42                     | decla_or_assign ',' decla_or_assign_list
-
-   43 decla_or_assign: ID
-   44                | ID '=' expr
-
-   45 assignment: ID '=' expr
-   46           | ID ATTOP expr
-   47           | ID UNARYOP
-   48           | UNARYOP ID
-
-   49 call: ID
-   50     | ID UNARYOP
-   51     | UNARYOP ID
-   52     | 'R' '(' type ')'
-   53     | ID '(' ')'
-   54     | ID '(' expr_list ')'
-
-   55 expr_list: expr
-   56          | expr ',' expr_list
-
-   57 assignment_list: assignment
-   58                | assignment ',' assignment_list
-
-   59 flux: if
-   60     | while
-   61     | for
-
-   62 if: '?' '(' expr ')' ifeq optional_block goto label elseif else label
-
-   63 elseif: %empty
-   64       | '$' '(' expr ')' ifeq optional_block goto label elseif
-
-   65 else: %empty
-   66     | ':' optional_block
-
-   67 while: 'W' label '(' expr ')' ifeq optional_block goto label
-
-   68 for: 'F' '(' declaration ';' label expr ifeq goto ';' label assignment_list goto ')' label optional_block goto label
-
-   69 $@3: %empty
-
-   70 function: '@' type ID '(' ')' $@3 optional_block
-
-   71 $@4: %empty
-
-   72 function: '@' type ID '(' declaration_list ')' $@4 optional_block
-
-   73 function_list: %empty
-   74              | function function_list
-
-   75 simple_declaration: type ID
-
-   76 declaration_list: simple_declaration
-   77                 | simple_declaration ',' declaration_list
-
-   78 print_list: expr
-
-   79 $@5: %empty
-
-   80 print_list: expr $@5 ',' print_list
-
-   81 print: 'P' '(' print_list ')'
-
-   82 label: %empty
-
-   83 goto: %empty
-
-   84 ifeq: %empty
+00 $accept: program $end
+01 $@1: %empty
+02 $@2: %empty
+03 program: $@1 function_list $@2 block
+04        | error program
+05 block: %empty
+06      | statement block
+07      | flux block
+08 statement: declaration ';'
+09          | assignment ';'
+10          | print ';'
+11          | '=' expr ';'
+12 optional_block: statement
+13               | '{' block '}'
+14 type: 'I'
+15     | 'D'
+16     | 'S'
+17     | 'V'
+18 value: INTEGER
+19      | FLOAT
+20      | STRING
+21 expr: value
+22     | call
+23     | expr '<' expr
+24     | expr '>' expr
+25     | expr CMPOP expr
+26     | expr '|' expr
+27     | expr '^' expr
+28     | expr '&' expr
+29     | expr BOOLOP expr
+30     | expr BITSHIFTOP expr
+31     | expr '+' expr
+32     | expr '-' expr
+33     | expr '*' expr
+34     | expr '/' expr
+35     | expr '%' expr
+36     | '-' expr
+37     | '!' expr
+38     | '(' type expr ')'
+39     | '(' expr ')'
+40 declaration: type decla_or_assign_list
+41 decla_or_assign_list: decla_or_assign
+42                     | decla_or_assign ',' decla_or_assign_list
+43 decla_or_assign: ID
+44                | ID '=' expr
+45 assignment: ID '=' expr
+46           | ID ATTOP expr
+47           | ID UNARYOP
+48           | UNARYOP ID
+49 call: ID
+50     | ID UNARYOP
+51     | UNARYOP ID
+52     | 'R' '(' type ')'
+53     | ID '(' ')'
+54     | ID '(' expr_list ')'
+55 expr_list: expr
+56          | expr ',' expr_list
+57 assignment_list: assignment
+58                | assignment ',' assignment_list
+59 flux: if
+60     | while
+61     | for
+62 if: '?' '(' expr ')' ifeq optional_block goto label elseif else label
+63 elseif: %empty
+64       | '$' '(' expr ')' ifeq optional_block goto label elseif
+65 else: %empty
+66     | ':' optional_block
+67 while: 'W' label '(' expr ')' ifeq optional_block goto label
+68 for: 'F' '(' declaration ';' label expr ifeq goto ';' label assignment_list goto ')' label optional_block goto label
+69 $@3: %empty
+70 function: '@' type ID '(' ')' $@3 optional_block
+71 $@4: %empty
+72 function: '@' type ID '(' declaration_list ')' $@4 optional_block
+73 function_list: %empty
+74              | function function_list
+75 simple_declaration: type ID
+76 declaration_list: simple_declaration
+77                 | simple_declaration ',' declaration_list
+78 print_list: expr
+79 $@5: %empty
+80 print_list: expr $@5 ',' print_list
+81 print: 'P' '(' print_list ')'
+82 label: %empty
+83 goto: %empty
+84 ifeq: %empty
