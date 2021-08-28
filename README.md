@@ -1,6 +1,26 @@
-# Compilador Verb
+<h1 align="center">Compilador Verb</h1>
 
 Compilador para a linguagem de própria autoria "Verb" feito usando [flex e bison](https://web.iitd.ac.in/~sumeet/flex__bison.pdf), a linguagem é compilada para [assembly JVM](https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-1.html) e pode ser executada usando [jasmin](http://jasmin.sourceforge.net/about.html) e java.
+
+<p align="center">
+  <a href="#1">Linguagem</a>
+  •
+  <a href="#2">Análise Léxica</a>
+  •
+  <a href="#3">Gramática</a>
+  •
+  <a href="#4">Reconhecimento de erros</a>
+  •
+  <a href="#5">Reconhecimento de erros</a>
+  •
+  <a href="#6">Comentários Sobre a Linguagem</a>
+  •
+  <a href="#7">Comentários Sobre as Ferramentas</a>
+  •
+  <a href="#8">Melhorias</a>
+  •
+  <a href="#8">Trabalhos de Referência e Inspirações</a>
+</p>
 
 * Para compilar use o comando: 
     ```
@@ -380,7 +400,7 @@ L_5:
 ```
 
 
-## 5 Reconhecimento de erros
+## 5. Reconhecimento de erros
 
 Com o objetivo de tratar erros léxicos e semânticos, utilizou-se as diretivas abaixo, estas possibilitaram o rastreio das posições dos erros, a construção de mensagens de erro completamente customizadas, o controle dos dados passados entre o analisador léxico e sintático e a utilização da estrutura *user_context* definida pelos autores para o armazenamento da linha do erro.
 
