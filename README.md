@@ -12,9 +12,9 @@ Compilador para a linguagem de própria autoria "Verb" feito usando [flex e biso
   <a href="#4-geração-de-bytecode">Geração de Bytecode</a>
   •
   <a href="#5-reconhecimento-de-erros">Reconhecimento de erros</a>
-  •
-  <a href="#6-comentários-sobre-a-linguagem">Comentários Sobre a Linguagem</a>
   <br>
+  <a href="#6-comentários-sobre-a-linguagem">Comentários Sobre a Linguagem</a>
+  •
   <a href="#7-comentários-sobre-as-ferramentas">Comentários Sobre as Ferramentas</a>
   •
   <a href="#8-melhorias">Melhorias</a>
