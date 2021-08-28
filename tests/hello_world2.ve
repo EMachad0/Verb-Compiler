@@ -5,3 +5,9 @@ S world = "World";
 S excl = "!";
 
 P(hello, world, excl);
+
+S fh() {
+    = "Hello World";
+}
+
+P(fh());

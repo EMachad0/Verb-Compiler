@@ -11,14 +11,14 @@ extern void write_line(int n);
 SCO             \;|\$|\:|\,|\(|\)|\{|\}|\[|\]
 
 /* keywords */
-KEYWORD         [DFIPRSW?]
+KEYWORD         [DFIPRSVW?@]
 
 /* variaveis */
 ID              [a-z_][a-z0-9_]*
 
 /* numeros */
 DIGITO          [0-9]
-INTEIRO         [\+\-]?{DIGITO}+
+INTEIRO         {DIGITO}+
 FLUTUANTE       {INTEIRO}\.{DIGITO}*|{INTEIRO}*\.{DIGITO}+
 
 /* text */
@@ -158,9 +158,7 @@ BLOCK_COMMENT   \/\*[^*]*\*\/
     
 .               {   yylloc->first_column = ++yylloc->last_column;
                     strcat(uctx->line, yytext);
-                    // char error[100];
-                    char *error = concat_many(5, RED, "lexical error ", RESET, " unexpected ", to_yellow(yytext) );
-                    // sprintf(error, RED "lexical error " RESET " unexpected '%c' ", yytext[0]);
+                    char *error = concat_many(5, RED, "lexical error", RESET, ":  unexpected ", to_yellow(yytext) );
                     yyerror(yylloc, uctx, error);
                     return YYerror;
                 }
