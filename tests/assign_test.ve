@@ -1,12 +1,4 @@
-I a;
-I b;
-a = 99;
-b = a;
-P(b);
-D c = 1.0;
-P(c);
-S hello_world = "Hello World";
-P("Hello Uord");
-P(hello_world);
-
-P("Media = ", 5, " foda ", 1.545, " PI = ", 3.15);
+I a = 0;
+W (a < 10) {
+    a++;
+}
