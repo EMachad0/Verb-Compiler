@@ -64,7 +64,7 @@ Foi optado por não implementar os comandos de fluxo `do-while` e `switch` pois 
 
 #### Funções Definidas pelo Usuário
 
-A função tem suporte para funções definidas pelo usuário, mas elas deve ser todas definidas no começo do arquivo e a sintaxe de definição de função é a seguinte:
+A função tem suporte para funções definidas pelo usuário, mas elas deve ser todas definidas no começo do arquivo e a sintaxe da definição de uma função é a seguinte:
 
 ```
 @ <tipo> <nome-func>(<lista-param>) {
@@ -84,7 +84,7 @@ D media = (2*a + 3*b + 5*c) / 10;  // calcula a média ponderada
 P("MEDIA = ", media);              // imprime a média para o terminal 
 ```
 
-O código acima mostra a resolução de um problema de média ponderada;
+O código acima mostra a resolução de um problema de média ponderada
 
 ## 2. Análise Léxica
 
