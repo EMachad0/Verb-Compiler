@@ -35,7 +35,7 @@ Compilador para a linguagem de própria autoria "Verb" feito usando [flex e biso
 
 ## 1. Linguagem
 
-Nomeada *Verb*, a linguagem tem como objetivo ser menos verbosa que as linguagens populares, para isso a linguagem desenvolvida todas as palavras reservadas são um caractere maiúsculo ou um símbolo, ela possibilita tanto o uso de código que não está em funções, quanto definição e chamada de funções. A definição dos blocos é dada como em C, com abertura e fechamento de colchetes ({}), e, assim como em C, a abertura de bloco só é necessária em *if*'s, *while*'s, *for*'s quando há mais de uma instrução no corpo do comando. Ela é fortemente tipada, portanto, na criação de uma variável ou função é necessário informar qual o tipo do dado. As condicionais dos blocos devem ser delimitadas por parenteses.
+Nomeada *Verb*, a linguagem tem como objetivo ser menos verbosa que as linguagens populares, para isso na linguagem desenvolvida todas as palavras reservadas são um caractere maiúsculo ou um símbolo, ela possibilita tanto o uso de código que não está em funções, quanto definição e chamada de funções. A definição dos blocos é dada como em C, com abertura e fechamento de colchetes ({}), e, assim como em C, a abertura de bloco só é necessária em *if*'s, *while*'s, *for*'s quando há mais de uma instrução no corpo do comando. Ela é fortemente tipada, portanto, na criação de uma variável ou função é necessário informar qual o tipo do dado. As condicionais dos blocos devem ser delimitadas por parenteses.
 
 Como a proposta é de cada palavra reservada tenha somente um caractere, é necessário ter uma lista de comandos para que o programador que está tendo seu primeiro contato saber qual o significado de cada comando:
 
@@ -45,7 +45,6 @@ Como a proposta é de cada palavra reservada tenha somente um caractere, é nece
 * D: `float`
 * S: `string`
 
-
 #### Comandos de Fluxo
 
 * ? = `if`
@@ -54,7 +53,7 @@ Como a proposta é de cada palavra reservada tenha somente um caractere, é nece
 * W = `while`
 * F = `for`
 
-Foi optado por não implementar os comandos de fluxo `do-while` e `switch` pois os autores tem a visão de que esses comandos são desnecessários e/ou são redundantes.
+Foi optado por não implementar os comandos de fluxo `do-while` e `switch` pois os autores tem a visão de que esses comandos são desnecessários e/ou redundantes.
 
 #### Funções Built-In
 
@@ -474,9 +473,9 @@ L_1:
 
 Desta forma as operações booleanas se adequam as três regras acima, embora provavelmente haja um custo computacional grande neste padrão alem da geração excessiva de linhas e labels, por fim, as operações de comparação permitiram aos autores a utilização dos operadores de *bitwise and* e *bitwise or* como *&&* e *||* respectivamente, note que os dois ultimos não tem comando corespondente no bytecode JVM.
 
-Os três tipos utilizados não seguem nenhum padrao em relação aos operadores suportado, *string* possui apenas os operadores "==" e "!=", float possui os operadores aritimeticos mas nenhum operador *bitwise*, e possui todos os operadores de comparação embora esta talvez tenha sido a parte mais feia da implementação pois não há suporte do bytecode JVM para comparação de float e assim houve a nescesside da conversão para inteiro e depois um comando especial de comparação, inteiro possui todos os operadores disponiveis pela bytecode JVM, incluindo bitshift, modulo e incremento unario, alem de uma implementação rustica do operator booleano de negação.
+Os três tipos utilizados não seguem nenhum padrao em relação aos operadores suportados, o tipo *string* possui apenas os operadores "==" e "!=", o tipo *float* possui os operadores aritimeticos mas nenhum operador *bitwise*, possui todos os operadores de comparação embora esta talvez tenha sido a parte mais feia da implementação pois não há suporte do bytecode JVM para comparação de float e assim houve a nescesside da conversão para inteiro e depois um comando especial de comparação, o tipo *inteiro* possui todos os operadores disponiveis pela bytecode JVM, incluindo bitshift, modulo e incremento unario, alem de uma implementação rustica do operator booleano de negação.
 
-Alguns operatores que os autores desejavam implementar, como exponenciação, *bitwise not*, gcd e etc, não possuem suporte da jvm e portanto não foram implementados por questões externas e portanto ficaram como propostas de melhorias
+Alguns operatores que os autores desejavam implementar, como exponenciação, *bitwise not*, gcd e etc, não possuem suporte da jvm e portanto não foram implementados por questões externas e ficaram apenas como propostas de melhorias
 
 Em conclusão, embora os autores tenham uma avaliação positiva do resultado, pois a implementação cumpriu o proposto e se mostrou superior em relação a trabalhos similares encontrados, ainda sentem que deve haver a possibilidade de uma melhor implementação.
 
