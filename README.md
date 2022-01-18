@@ -88,7 +88,7 @@ O código acima mostra a resolução de um problema de média ponderada
 
 ## 2. Análise Léxica
 
-A análise léxica foi auxiliada pela ferramenta **flex** e nela forma definidos os tokens e seus respectívos *regex*. Durante a análise léxica também foi salva a estrutura do código para o tratamento de erros, por exemplo: linha é incrementada quando um `\n` é encontrado, quando palavras são encontradas o início e final são marcados, etc. Enumerando alguns dos *regex*'es e seus tokens:
+A análise léxica foi auxiliada pela ferramenta **flex** e nela foram definidos os tokens e seus respectívos *regex*. Durante a análise léxica também foi salva a estrutura do código para o tratamento de erros, por exemplo: linha é incrementada quando um `\n` é encontrado, quando palavras são encontradas o início e final são marcados, etc. Enumerando alguns dos *regex*'es e seus tokens:
 
 ```
 /* numeros */
@@ -276,7 +276,7 @@ astore 1
 
 #### Comando `if`, `else`, `else-if`
 
-O comando de fluxo `if` é traduzido para algumas operações. Como pode ser visto na gramática, o if pode receber qualquer expressão como condição, então a lógica usada para traduzir um if foi: deixar o resultado da expressão no topo da pilha e se o resultado for diferente de zero o fluxo é quebrado para entrar proceder com as instruções entrando no `if`, e no final dessas instruções há sempre uma quebra para fora do `if`; se não, o fluxo é quebrado para a próxima instrução, que pode ser um `else-if`, o else fica sempre como última label na qual somente entra se não entrar em nenhum dos outros comandos. Por exemplo:
+O comando de fluxo `if` é traduzido para algumas operações. Como pode ser visto na gramática, o if pode receber qualquer expressão como condição, então a lógica usada para traduzir um if foi: deixar o resultado da expressão no topo da pilha e se o resultado for diferente de zero o fluxo é quebrado para proceder com as instruções entrando no `if`, e no final dessas instruções há sempre uma quebra para fora do `if`; se não, o fluxo é quebrado para a próxima instrução, que pode ser um `else-if`, o else fica sempre como última label na qual somente entra se não entrar em nenhum dos outros comandos. Por exemplo:
 
 ```
 I a;
