@@ -317,7 +317,7 @@ int main(int argc, const char **argv) {
         if (strcmp(argv[i], "-p") == 0) yydebug = 1;
         else {
             printf("Compiling %s\n", argv[i]);
-            source_file = (source_file[0] == '.')? argv[i]+1 : argv[i];
+            source_file = (argv[i][0] == '.')? argv[i]+1 : argv[i];
             yyin = fopen(argv[i], "r");
         } 
     }
