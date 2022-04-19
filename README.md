@@ -22,11 +22,19 @@ Compilador para a linguagem de própria autoria "Verb" feito usando [flex e biso
   <a href="#9-trabalhos-de-referência-e-inspirações">Trabalhos de Referência e Inspirações</a>
 </p>
 
+* Pré-requisitos: `Bison` e `Flex`
+    ```
+    sudo apt-get install bison flex
+    ```
+
 * Para compilar use o comando: 
     ```
     make f=<verb-file>.ve
     ```
-    Substituindo `<verb-file>` por um código verb, você pode usar um dos exemplos em `./tests/`.
+    Substituindo `<verb-file>` por um código verb, você pode usar um dos exemplos em `./tests/`. Por exemplo:
+    ```
+    make f=tests/error.ve
+    ```
 
 * Para mais instruções use:
     ```
